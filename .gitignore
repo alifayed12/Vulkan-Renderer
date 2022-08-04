@@ -1,0 +1,7 @@
+# Directories
+.vs/
+Dependencies/Vulkan/
+x64/
+
+# Files
+*.user
