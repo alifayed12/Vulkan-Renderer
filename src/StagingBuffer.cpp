@@ -2,7 +2,7 @@
 
 namespace VE
 {
-	StagingBuffer::StagingBuffer(Device* device, uint64_t dataSize)
+	StagingBuffer::StagingBuffer(std::shared_ptr<Device> device, uint64_t dataSize)
 		: Buffer(device, dataSize)
 	{
 		CreateBuffer();

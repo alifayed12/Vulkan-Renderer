@@ -3,13 +3,13 @@
 #include <GLFW/glfw3.h>
 
 #include "VertexBuffer.hpp"
-#include "StagingBuffer.hpp"
 
 namespace VE
 {
     Application::Application()
-        : m_Window(WIDTH, HEIGHT, "Vulkan"), m_Device(&m_Window),
-        m_Renderer(&m_Window, &m_Device)
+        : m_Window(WIDTH, HEIGHT, "Vulkan"),
+            m_Device(std::make_shared<Device>(&m_Window)),
+            m_Renderer(&m_Window, m_Device)
     {
     }
 
@@ -23,11 +23,7 @@ namespace VE
         };
 
         uint64_t dataSize = static_cast<uint64_t>(vertices.size()) * sizeof(Vertex);
-
-        StagingBuffer stagingBuffer(&m_Device, dataSize);
-        stagingBuffer.UploadData(vertices.data());
-
-        VertexBuffer vert(&m_Device, dataSize, stagingBuffer);
+        VertexBuffer vert(m_Device, dataSize, vertices.data());
 
         while(!m_Window.ShouldClose())
         {
@@ -35,6 +31,6 @@ namespace VE
             m_Renderer.DrawFrame(vert);
         }
 
-        vkDeviceWaitIdle(m_Device.GetDevice());
+        vkDeviceWaitIdle(m_Device->GetDevice());
     }
 }

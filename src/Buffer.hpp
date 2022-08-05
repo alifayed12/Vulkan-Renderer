@@ -8,6 +8,7 @@
 
 #include <array>
 #include <vector>
+#include <memory>
 
 namespace VE
 {
@@ -20,7 +21,7 @@ namespace VE
 	class Buffer
 	{
 	public:
-		Buffer(Device* device, uint64_t dataSize);
+		Buffer(std::shared_ptr<Device>, uint64_t dataSize);
 		virtual ~Buffer();
 	public:
 		inline VkBuffer GetVKBuffer() const { return m_Buffer; }
@@ -31,7 +32,7 @@ namespace VE
 		virtual void CreateBuffer() = 0;
 		virtual uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 	protected:
-		Device*		m_Device;
+		std::shared_ptr<Device>		m_Device;
 		VkBuffer	m_Buffer;
 		VkDeviceMemory	m_DeviceMemory;
 		uint64_t		m_DataSize;

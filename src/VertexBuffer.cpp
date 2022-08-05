@@ -2,11 +2,12 @@
 
 namespace VE
 {
-	VertexBuffer::VertexBuffer(Device* device, uint64_t dataSize, StagingBuffer& buffer)
-		: Buffer(device, dataSize)
+	VertexBuffer::VertexBuffer(std::shared_ptr<Device> device, uint64_t dataSize, const void* data)
+		: Buffer(device, dataSize), m_StagingBuffer(device, dataSize)
 	{
 		CreateBuffer();
-		CopyBuffer(buffer.GetVKBuffer(), dataSize);
+		m_StagingBuffer.UploadData(data);
+		CopyBuffer(m_StagingBuffer.GetVKBuffer(), dataSize);
 	}
 
 	void VertexBuffer::CreateBuffer()

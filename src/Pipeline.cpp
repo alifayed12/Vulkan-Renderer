@@ -7,7 +7,7 @@
 
 namespace VE
 {
-    Pipeline::Pipeline(Device* device, Swapchain* swapchain)
+    Pipeline::Pipeline(std::shared_ptr<Device> device, std::shared_ptr<Swapchain> swapchain)
         : m_GraphicsPipeline(VK_NULL_HANDLE), m_PipelineLayout(VK_NULL_HANDLE),
             m_Device(device), m_Swapchain(swapchain)
     {

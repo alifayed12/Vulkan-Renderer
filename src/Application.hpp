@@ -3,6 +3,8 @@
 #include "Window.hpp"
 #include "Renderer.hpp"
 
+#include <memory>
+
 namespace VE
 {
     class Application
@@ -19,8 +21,8 @@ namespace VE
         static constexpr int WIDTH = 900;
         static constexpr int HEIGHT = 600;
     private:
-        Window m_Window;
-        Device m_Device;
-        Renderer m_Renderer;
+        Window                  m_Window;
+        std::shared_ptr<Device> m_Device;
+        Renderer                m_Renderer;
     };
 }

@@ -14,7 +14,7 @@ namespace VE
     class Pipeline
     {
     public:
-        Pipeline(Device* device, Swapchain* swapchain);
+        Pipeline(std::shared_ptr<Device> device, std::shared_ptr<Swapchain> swapchain);
         ~Pipeline();
 
         Pipeline(const Pipeline& otherPipeline) = delete;
@@ -29,7 +29,7 @@ namespace VE
     private:
         VkPipeline          m_GraphicsPipeline;
         VkPipelineLayout    m_PipelineLayout;
-        Device*     m_Device;
-        Swapchain*  m_Swapchain;
+        std::shared_ptr<Device>     m_Device;
+        std::shared_ptr<Swapchain>  m_Swapchain;
     };
 }

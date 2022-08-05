@@ -8,12 +8,14 @@
 #include "Pipeline.hpp"
 #include "VertexBuffer.hpp"
 
+#include <memory>
+
 namespace VE
 {
 	class Renderer
 	{
 	public:
-		Renderer(Window* window, Device* device);
+		Renderer(Window* window, std::shared_ptr<Device> device);
 		~Renderer() = default;
 
 		Renderer(const Renderer& otherRenderer) = delete;
@@ -25,14 +27,14 @@ namespace VE
 		void BeginFrame(VkCommandBuffer commandBuffer);
 		void EndFrame(VkCommandBuffer commandBuffer);
 	private:
-		inline VkCommandBuffer GetCurrentCommandBuffer() { return m_CommandBuffers[m_Swapchain.GetCurrentFrame()]; }
+		inline VkCommandBuffer GetCurrentCommandBuffer() { return m_CommandBuffers[m_Swapchain->GetCurrentFrame()]; }
 	private:
 		std::vector<VkCommandBuffer>	m_CommandBuffers;
-		Window*			m_Window;
-		Device*			m_Device;
-		Swapchain		m_Swapchain;
-		Pipeline		m_Pipeline;
-		uint32_t		m_CurrentImageIndex;
+		Window*							m_Window;
+		std::shared_ptr<Device>			m_Device;
+		std::shared_ptr<Swapchain>		m_Swapchain;
+		Pipeline						m_Pipeline;
+		uint32_t						m_CurrentImageIndex;
 	};
 }
 

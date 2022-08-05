@@ -2,10 +2,11 @@
 
 #include <vulkan/vulkan.h>
 
+#include "Window.hpp"
+
 #include <vector>
 #include <optional>
-
-#include "Window.hpp"
+#include <memory>
 
 namespace VE
 {
