@@ -165,6 +165,7 @@
     <ClCompile Include="src\Swapchain.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
+    <ClCompile Include="src\StagingBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Buffer.hpp" />
@@ -459,6 +460,7 @@
     <ClInclude Include="src\vendor\glm\vector_relational.hpp" />
     <ClInclude Include="src\Window.hpp" />
     <ClInclude Include="src\VertexBuffer.hpp" />
+    <ClInclude Include="src\StagingBuffer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl" />

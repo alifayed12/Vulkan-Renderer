@@ -2,7 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Mesh.hpp"
+#include "VertexBuffer.hpp"
+#include "StagingBuffer.hpp"
 
 namespace VE
 {
@@ -21,8 +22,12 @@ namespace VE
             {{-0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}}
         };
 
-        VertexBuffer vert(&m_Device, static_cast<uint64_t>(vertices.size()) * sizeof(Vertex));
-        vert.UploadData(vertices);
+        uint64_t dataSize = static_cast<uint64_t>(vertices.size()) * sizeof(Vertex);
+
+        StagingBuffer stagingBuffer(&m_Device, dataSize);
+        stagingBuffer.UploadData(vertices.data());
+
+        VertexBuffer vert(&m_Device, dataSize, stagingBuffer);
 
         while(!m_Window.ShouldClose())
         {

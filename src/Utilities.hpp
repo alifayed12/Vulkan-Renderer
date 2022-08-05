@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 #define VK_CHECK(x)                                                             \
     if(x != VK_SUCCESS)                                                         \
     {                                                                           \

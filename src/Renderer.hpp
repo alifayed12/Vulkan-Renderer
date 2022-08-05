@@ -7,7 +7,6 @@
 #include "Swapchain.hpp"
 #include "Pipeline.hpp"
 #include "VertexBuffer.hpp"
-#include "Mesh.hpp"
 
 namespace VE
 {
