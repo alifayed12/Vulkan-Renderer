@@ -46,7 +46,7 @@ namespace VE
         void CleanSwapchain();
         void Clean();
     private:
-        VkSwapchainKHR  m_Swapchain;
+        VkSwapchainKHR              m_Swapchain;
         std::shared_ptr<Device>     m_Device;
         Window*         m_Window;
         VkFormat        m_ImageFormat;

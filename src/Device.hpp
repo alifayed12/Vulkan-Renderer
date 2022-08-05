@@ -57,8 +57,8 @@ namespace VE
         SwapchainSupportDetails QuerySwapchainSupport(VkPhysicalDevice physicalDevice);
         void Clean();
     private:
+        Window* m_Window;
         VkInstance          m_Instance;
-        Window*             m_Window;
         VkPhysicalDevice    m_PhysicalDevice;
         VkDevice            m_LogicalDevice;
         VkQueue             m_GraphicsQueue;

@@ -11,9 +11,9 @@
 namespace VE
 {
     Device::Device(Window* window)
-        : m_Instance(VK_NULL_HANDLE), m_Window(window), m_PhysicalDevice(VK_NULL_HANDLE),
-        m_LogicalDevice(VK_NULL_HANDLE), m_GraphicsQueue(VK_NULL_HANDLE), m_PresentQueue(VK_NULL_HANDLE),
-        m_Surface(VK_NULL_HANDLE), m_CommandPool(VK_NULL_HANDLE)
+        : m_Window(window), m_Instance(VK_NULL_HANDLE), m_PhysicalDevice(VK_NULL_HANDLE),
+            m_LogicalDevice(VK_NULL_HANDLE), m_GraphicsQueue(VK_NULL_HANDLE), m_PresentQueue(VK_NULL_HANDLE),
+            m_Surface(VK_NULL_HANDLE), m_CommandPool(VK_NULL_HANDLE)
     {
         m_ValidationLayers =
         {
