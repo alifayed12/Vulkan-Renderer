@@ -10,7 +10,7 @@
 namespace VE
 {
     Application::Application()
-        : m_Window(WIDTH, HEIGHT, "Vulkan"),
+        : m_Window(WIDTH, HEIGHT, "Vulkan Engine"),
             m_Device(std::make_shared<Device>(&m_Window)),
             m_Renderer(&m_Window, m_Device)
     {
@@ -20,10 +20,10 @@ namespace VE
     {
         const std::vector<Vertex> vertices =
         {
-            {{-0.5f, -0.5f},    {0.484f, 0.815f, 0.776f}},
-            {{ 0.5f, -0.5f},    {0.484f, 0.815f, 0.776f}},
-            {{ 0.5f,  0.5f},    {0.164f, 0.615f, 0.561f}},
-            {{-0.5f,  0.5f},    {0.164f, 0.615f, 0.561f}}
+            {{-0.5f, -0.5f},    {0.463f, 0.470f, 0.929f}},
+            {{ 0.5f, -0.5f},    {0.463f, 0.470f, 0.929f}},
+            {{ 0.5f,  0.5f},    {0.463f, 0.470f, 0.929f}},
+            {{-0.5f,  0.5f},    {0.463f, 0.470f, 0.929f}}
         };
 
         const std::vector<uint16_t> indices = 
@@ -36,6 +36,9 @@ namespace VE
 
         VertexBuffer vert(m_Device, vertexDataSize, vertices.data());
         IndexBuffer index(m_Device, indexDataSize, indices.data());
+
+        // Model model(vert, index);
+        // m_Renderer.DrawFrame(model);
 
         while(!m_Window.ShouldClose())
         {

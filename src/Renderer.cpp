@@ -84,12 +84,11 @@ namespace VE
 		VkRenderPassBeginInfo renderPassInfo {};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = m_Swapchain->GetRenderPass();
-		std::vector<VkFramebuffer> buffers = m_Swapchain->GetFramebuffers();
 		renderPassInfo.framebuffer = m_Swapchain->GetFramebuffers()[m_CurrentImageIndex];
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = m_Swapchain->GetExtent();
 
-		VkClearValue clearColor = { {{0.149f, 0.274f, 0.325f, 1.0f}} };
+		VkClearValue clearColor = { {{0.239f, 0.209f, 0.545f, 1.0f}} };
 		renderPassInfo.clearValueCount = 1;
 		renderPassInfo.pClearValues = &clearColor;
 
