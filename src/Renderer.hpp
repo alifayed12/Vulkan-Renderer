@@ -6,8 +6,8 @@
 #include "Device.hpp"
 #include "Swapchain.hpp"
 #include "Pipeline.hpp"
-#include "VertexBuffer.hpp"
-#include "IndexBuffer.hpp"
+#include "Buffer/VertexBuffer.hpp"
+#include "Buffer/IndexBuffer.hpp"
 
 #include <memory>
 

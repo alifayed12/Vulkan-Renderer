@@ -2,8 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
-#include "VertexBuffer.hpp"
-#include "IndexBuffer.hpp"
+#include "Buffer/VertexBuffer.hpp"
+#include "Buffer/IndexBuffer.hpp"
 
 #include <iostream>
 

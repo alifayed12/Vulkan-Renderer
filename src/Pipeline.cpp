@@ -1,6 +1,6 @@
 #include "Pipeline.hpp"
 
-#include "Buffer.hpp"
+#include "Buffer/Buffer.hpp"
 #include "Utilities.hpp"
 
 #include <fstream>
