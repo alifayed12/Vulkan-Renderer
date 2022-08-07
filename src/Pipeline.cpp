@@ -19,7 +19,7 @@ namespace VE
         Clean();
     }
 
-    std::vector<char> Pipeline::ReadShaderFile(std::string_view filename)
+    std::vector<char> Pipeline::ReadShaderFile(std::string_view filename) const
     {
         std::string fullPath = "D:\\OpenGL Projects\\VulkanEngine\\Res\\Shaders\\" + std::string(filename.data());
         std::ifstream shaderFile(fullPath, std::ios::ate | std::ios::binary);
@@ -39,7 +39,7 @@ namespace VE
         return buffer;
     }
 
-    VkShaderModule Pipeline::CreateShaderModule(std::span<char> shaderCode)
+    VkShaderModule Pipeline::CreateShaderModule(std::span<char> shaderCode) const
     {
         VkShaderModuleCreateInfo moduleCreateInfo{};
         moduleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;

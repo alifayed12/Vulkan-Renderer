@@ -23,7 +23,7 @@ namespace VE
         Clean();
     }
 
-    VkSurfaceFormatKHR Swapchain::ChooseSwapchainFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
+    VkSurfaceFormatKHR Swapchain::ChooseSwapchainFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) const
     {
         for(const auto& format : availableFormats)
         {
@@ -35,7 +35,7 @@ namespace VE
         return availableFormats[0];
     }
 
-    VkPresentModeKHR Swapchain::ChoosePresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
+    VkPresentModeKHR Swapchain::ChoosePresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) const
     {
         for(const auto& presentMode : availablePresentModes)
         {
@@ -47,7 +47,7 @@ namespace VE
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
-    VkExtent2D Swapchain::ChooseSwapchainExtent(const VkSurfaceCapabilitiesKHR& capabilities)
+    VkExtent2D Swapchain::ChooseSwapchainExtent(const VkSurfaceCapabilitiesKHR& capabilities) const
     {
         if(capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         {

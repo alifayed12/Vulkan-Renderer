@@ -174,7 +174,7 @@ namespace VE
         return requiredExtensions.empty();
     }
 
-    QueueFamilyIndices Device::FindQueueFamilies(VkPhysicalDevice device)
+    QueueFamilyIndices Device::FindQueueFamilies(VkPhysicalDevice device) const
     {
         QueueFamilyIndices indices;
 
@@ -284,7 +284,7 @@ namespace VE
         }
     }
 
-    SwapchainSupportDetails Device::QuerySwapchainSupport(VkPhysicalDevice physicalDevice)
+    SwapchainSupportDetails Device::QuerySwapchainSupport(VkPhysicalDevice physicalDevice) const
     {
         SwapchainSupportDetails details;
 

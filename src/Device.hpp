@@ -36,11 +36,11 @@ namespace VE
         Device(Device&&) = delete;
         Device& operator=(Device&& otherDevice) = delete;
     public:
-        inline VkDevice GetDevice() { return m_LogicalDevice; }
-        inline VkPhysicalDevice GetPhysicalDevice() { return m_PhysicalDevice; }
-        inline VkSurfaceKHR GetSurface() { return m_Surface; }
-        inline SwapchainSupportDetails GetSwapchainSupport() { return QuerySwapchainSupport(m_PhysicalDevice); }
-        inline QueueFamilyIndices GetQueueFamilyIndices() { return FindQueueFamilies(m_PhysicalDevice); }
+        inline VkDevice GetDevice() const { return m_LogicalDevice; }
+        inline VkPhysicalDevice GetPhysicalDevice() const { return m_PhysicalDevice; }
+        inline VkSurfaceKHR GetSurface() const { return m_Surface; }
+        inline SwapchainSupportDetails GetSwapchainSupport() const { return QuerySwapchainSupport(m_PhysicalDevice); }
+        inline QueueFamilyIndices GetQueueFamilyIndices() const { return FindQueueFamilies(m_PhysicalDevice); }
         inline VkCommandPool GetCommandPool() const { return m_CommandPool; }
         inline VkQueue GetGraphicsQueue() const { return m_GraphicsQueue; }
         inline VkQueue GetPresentQueue() const { return m_PresentQueue; }
@@ -50,11 +50,11 @@ namespace VE
         void PickPhysicalDevice();
         bool IsDeviceSuitable(VkPhysicalDevice physicalDevice);
         bool CheckDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
-        QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+        QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device) const;
         void CreateLogicalDevice();
         void CreateSurface();
         void CreateCommandPool();
-        SwapchainSupportDetails QuerySwapchainSupport(VkPhysicalDevice physicalDevice);
+        SwapchainSupportDetails QuerySwapchainSupport(VkPhysicalDevice physicalDevice) const;
         void Clean();
     private:
         Window* m_Window;

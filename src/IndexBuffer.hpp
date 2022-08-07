@@ -5,10 +5,10 @@
 
 namespace VE
 {
-	class VertexBuffer : public Buffer
+	class IndexBuffer : public Buffer
 	{
 	public:
-		VertexBuffer(std::shared_ptr<Device> device, uint64_t dataSize, const void* data);
+		IndexBuffer(std::shared_ptr<Device> device, uint64_t dataSize, const void* data);
 	public:
 		void BindBuffer(VkCommandBuffer commandBuffer) const override;
 		void CopyBuffer(VkBuffer srcBuffer, VkDeviceSize memSize);

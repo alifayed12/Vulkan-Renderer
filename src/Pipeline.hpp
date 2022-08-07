@@ -20,10 +20,10 @@ namespace VE
         Pipeline(const Pipeline& otherPipeline) = delete;
         Pipeline& operator=(const Pipeline& otherPipeline) = delete;
     public:
-        inline VkPipeline GetGraphicsPipeline() { return m_GraphicsPipeline; }
+        inline VkPipeline GetGraphicsPipeline() const { return m_GraphicsPipeline; }
     private:
-        std::vector<char> ReadShaderFile(std::string_view filepath);
-        VkShaderModule CreateShaderModule(std::span<char> shaderCode);
+        std::vector<char> ReadShaderFile(std::string_view filepath) const;
+        VkShaderModule CreateShaderModule(std::span<char> shaderCode) const;
         void CreateGraphicsPipeline();
         void Clean();
     private:

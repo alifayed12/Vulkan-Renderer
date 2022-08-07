@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\Buffer.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="src\StagingBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\IndexBuffer.hpp" />
     <ClInclude Include="src\Buffer.hpp" />
     <ClInclude Include="src\Mesh.hpp" />
     <ClInclude Include="src\Renderer.hpp" />

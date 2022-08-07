@@ -1,6 +1,5 @@
 #include "Renderer.hpp"
 
-#include "VertexBuffer.hpp"
 #include "Utilities.hpp"
 
 #include <stdexcept>
@@ -23,15 +22,15 @@ namespace VE
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.commandPool = m_Device->GetCommandPool();
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandBufferCount = m_CommandBuffers.size();
+		allocInfo.commandBufferCount = static_cast<uint32_t>(m_CommandBuffers.size());
 
 		VK_CHECK(vkAllocateCommandBuffers(m_Device->GetDevice(), &allocInfo, m_CommandBuffers.data()))
 	}
 
-	void Renderer::DrawFrame(VertexBuffer& buffer)
+	void Renderer::DrawFrame(const VertexBuffer& vertexBuffer, const IndexBuffer& indexBuffer)
 	{
-		VkCommandBuffer currentBuffer = GetCurrentCommandBuffer();
-		BeginFrame(currentBuffer);
+		VkCommandBuffer currCommandBuffer = GetCurrentCommandBuffer();
+		BeginFrame(currCommandBuffer);
 
 		// Draw Here
 		VkViewport viewport{};
@@ -46,14 +45,16 @@ namespace VE
 		scissor.offset = { 0, 0 };
 		scissor.extent = m_Swapchain->GetExtent();
 
-		vkCmdBindPipeline(currentBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline.GetGraphicsPipeline());
-		vkCmdSetViewport(currentBuffer, 0, 1, &viewport);
-		vkCmdSetScissor(currentBuffer, 0, 1, &scissor);
-		buffer.BindBuffer(currentBuffer);
+		vkCmdBindPipeline(currCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline.GetGraphicsPipeline());
+		vkCmdSetViewport(currCommandBuffer, 0, 1, &viewport);
+		vkCmdSetScissor(currCommandBuffer, 0, 1, &scissor);
 
-		vkCmdDraw(currentBuffer, 3, 1, 0, 0);
+		vertexBuffer.BindBuffer(currCommandBuffer);
+		indexBuffer.BindBuffer(currCommandBuffer);
 
-		EndFrame(currentBuffer);
+		vkCmdDrawIndexed(currCommandBuffer, indexBuffer.GetDataCount(), 1, 0, 0, 0);
+
+		EndFrame(currCommandBuffer);
 	}
 
 	void Renderer::BeginFrame(VkCommandBuffer commandBuffer)

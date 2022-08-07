@@ -9,9 +9,10 @@ namespace VE
 	public:
 		StagingBuffer(std::shared_ptr<Device> device, uint64_t dataSize);
 	public:
-		void BindBuffer(VkCommandBuffer commandBuffer) override;
+		void BindBuffer(VkCommandBuffer commandBuffer) const override;
 	private:
 		virtual void CreateBuffer() override;
+		virtual uint32_t GetDataCount() const override;
 	};
 }
 

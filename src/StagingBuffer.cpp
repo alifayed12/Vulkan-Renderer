@@ -30,8 +30,13 @@ namespace VE
 		vkBindBufferMemory(m_Device->GetDevice(), this->m_Buffer, m_DeviceMemory, 0);
 	}
 
-	void StagingBuffer::BindBuffer(VkCommandBuffer commandBuffer)
+	void StagingBuffer::BindBuffer(VkCommandBuffer commandBuffer) const
 	{
 		// No need to bind
+	}
+
+	uint32_t StagingBuffer::GetDataCount() const
+	{
+		return 1;
 	}
 }

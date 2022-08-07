@@ -10,7 +10,6 @@ namespace VE
 
 	Buffer::~Buffer()
 	{
-		//vkDeviceWaitIdle(m_Device->GetDevice());
 		if (m_Buffer)
 		{
 			vkDestroyBuffer(m_Device->GetDevice(), m_Buffer, nullptr);
@@ -21,7 +20,7 @@ namespace VE
 		}
 	}
 
-	uint32_t Buffer::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+	uint32_t Buffer::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const
 	{
 		VkPhysicalDeviceMemoryProperties memProperties;
 		vkGetPhysicalDeviceMemoryProperties(m_Device->GetPhysicalDevice(), &memProperties);

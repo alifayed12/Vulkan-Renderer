@@ -7,6 +7,7 @@
 #include "Swapchain.hpp"
 #include "Pipeline.hpp"
 #include "VertexBuffer.hpp"
+#include "IndexBuffer.hpp"
 
 #include <memory>
 
@@ -21,13 +22,13 @@ namespace VE
 		Renderer(const Renderer& otherRenderer) = delete;
 		Renderer& operator=(const Renderer& otherRenderer) = delete;
 	public:
-		void DrawFrame(VertexBuffer& buffer);
+		void DrawFrame(const VertexBuffer& vertexBuffer, const IndexBuffer& indexBuffer);
 	private:
 		void CreateCommandBuffer();
 		void BeginFrame(VkCommandBuffer commandBuffer);
 		void EndFrame(VkCommandBuffer commandBuffer);
 	private:
-		inline VkCommandBuffer GetCurrentCommandBuffer() { return m_CommandBuffers[m_Swapchain->GetCurrentFrame()]; }
+		inline VkCommandBuffer GetCurrentCommandBuffer() const { return m_CommandBuffers[m_Swapchain->GetCurrentFrame()]; }
 	private:
 		std::vector<VkCommandBuffer>	m_CommandBuffers;
 		Window*							m_Window;

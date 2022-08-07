@@ -27,13 +27,14 @@ namespace VE
 		inline VkBuffer GetVKBuffer() const { return m_Buffer; }
 	public:
 		virtual void UploadData(const void* memory);
-		virtual void BindBuffer(VkCommandBuffer commandBuffer) = 0;
+		virtual void BindBuffer(VkCommandBuffer commandBuffer) const = 0;
+		virtual uint32_t GetDataCount() const = 0;
 	protected:
 		virtual void CreateBuffer() = 0;
-		virtual uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+		virtual uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
 	protected:
 		std::shared_ptr<Device>		m_Device;
-		VkBuffer	m_Buffer;
+		VkBuffer		m_Buffer;
 		VkDeviceMemory	m_DeviceMemory;
 		uint64_t		m_DataSize;
 	};

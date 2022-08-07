@@ -1,8 +1,8 @@
-#include "VertexBuffer.hpp"
+#include "IndexBuffer.hpp"
 
 namespace VE
 {
-	VertexBuffer::VertexBuffer(std::shared_ptr<Device> device, uint64_t dataSize, const void* data)
+	IndexBuffer::IndexBuffer(std::shared_ptr<Device> device, uint64_t dataSize, const void* data)
 		: Buffer(device, dataSize), m_StagingBuffer(device, dataSize)
 	{
 		CreateBuffer();
@@ -10,12 +10,12 @@ namespace VE
 		CopyBuffer(m_StagingBuffer.GetVKBuffer(), dataSize);
 	}
 
-	void VertexBuffer::CreateBuffer()
+	void IndexBuffer::CreateBuffer()
 	{
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		bufferInfo.size = this->m_DataSize;
-		bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+		bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		VK_CHECK(vkCreateBuffer(this->m_Device->GetDevice(), &bufferInfo, nullptr, &this->m_Buffer))
@@ -29,16 +29,15 @@ namespace VE
 		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VK_CHECK(vkAllocateMemory(this->m_Device->GetDevice(), &allocInfo, nullptr, &m_DeviceMemory))
-		vkBindBufferMemory(this->m_Device->GetDevice(), this->m_Buffer, m_DeviceMemory, 0);
+			vkBindBufferMemory(this->m_Device->GetDevice(), this->m_Buffer, m_DeviceMemory, 0);
 	}
 
-	void VertexBuffer::BindBuffer(VkCommandBuffer commandBuffer) const
+	void IndexBuffer::BindBuffer(VkCommandBuffer commandBuffer) const
 	{
-		VkDeviceSize offsets[] = { 0 };
-		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &this->m_Buffer, offsets);
+		vkCmdBindIndexBuffer(commandBuffer, this->m_Buffer, 0, VK_INDEX_TYPE_UINT16);
 	}
 
-	void VertexBuffer::CopyBuffer(VkBuffer srcBuffer, VkDeviceSize memSize)
+	void IndexBuffer::CopyBuffer(VkBuffer srcBuffer, VkDeviceSize memSize)
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -49,7 +48,7 @@ namespace VE
 		VkCommandBuffer commandBuffer;
 		VK_CHECK(vkAllocateCommandBuffers(this->m_Device->GetDevice(), &allocInfo, &commandBuffer))
 
-		VkCommandBufferBeginInfo beginInfo{};
+		VkCommandBufferBeginInfo beginInfo {};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
@@ -74,8 +73,8 @@ namespace VE
 		vkFreeCommandBuffers(this->m_Device->GetDevice(), this->m_Device->GetCommandPool(), 1, &commandBuffer);
 	}
 
-	uint32_t VertexBuffer::GetDataCount() const
+	uint32_t IndexBuffer::GetDataCount() const
 	{
-		return static_cast<uint32_t>(m_DataSize / sizeof(Vertex));
+		return static_cast<uint32_t>(m_DataSize / sizeof(uint16_t));
 	}
 }
