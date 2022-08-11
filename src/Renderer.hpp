@@ -6,9 +6,14 @@
 #include "Device.hpp"
 #include "Swapchain.hpp"
 #include "Pipeline.hpp"
+
 #include "Buffer/VertexBuffer.hpp"
 #include "Buffer/IndexBuffer.hpp"
 
+#include "Descriptor/DescriptorSets.hpp"
+#include "Descriptor/DescriptorPool.hpp"
+
+#include <vector>
 #include <memory>
 
 namespace VE
@@ -17,14 +22,16 @@ namespace VE
 	{
 	public:
 		Renderer(Window* window, std::shared_ptr<Device> device);
-		~Renderer() = default;
+		~Renderer();
 
 		Renderer(const Renderer& otherRenderer) = delete;
 		Renderer& operator=(const Renderer& otherRenderer) = delete;
 	public:
 		void DrawFrame(const VertexBuffer& vertexBuffer, const IndexBuffer& indexBuffer);
 	private:
-		void CreateCommandBuffer();
+		void CreateCommandBuffers();
+		void CreatePipelineLayout();
+		void CreatePipeline();
 		void BeginFrame(VkCommandBuffer commandBuffer);
 		void EndFrame(VkCommandBuffer commandBuffer);
 	private:
@@ -34,7 +41,8 @@ namespace VE
 		Window*							m_Window;
 		std::shared_ptr<Device>			m_Device;
 		std::shared_ptr<Swapchain>		m_Swapchain;
-		Pipeline						m_Pipeline;
+		VkPipelineLayout				m_PipelineLayout;
+		std::unique_ptr<Pipeline>		m_Pipeline;
 		uint32_t						m_CurrentImageIndex;
 	};
 }

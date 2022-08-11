@@ -23,6 +23,5 @@ namespace VE
     private:
         Window                  m_Window;
         std::shared_ptr<Device> m_Device;
-        Renderer                m_Renderer;
     };
 }

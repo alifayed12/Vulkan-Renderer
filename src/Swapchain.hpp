@@ -48,10 +48,10 @@ namespace VE
     private:
         VkSwapchainKHR              m_Swapchain;
         std::shared_ptr<Device>     m_Device;
-        Window*         m_Window;
-        VkFormat        m_ImageFormat;
-        VkExtent2D      m_ImageExtent;
-        VkRenderPass    m_RenderPass;
+        Window*                     m_Window;
+        VkFormat                    m_ImageFormat;
+        VkExtent2D                  m_ImageExtent;
+        VkRenderPass                m_RenderPass;
         std::vector<VkFramebuffer>  m_Framebuffers;
         std::vector<VkImage>        m_Images;
         std::vector<VkImageView>    m_ImageViews;

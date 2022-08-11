@@ -6,8 +6,8 @@ namespace VE
 		: Buffer(device, dataSize), m_StagingBuffer(device, dataSize)
 	{
 		CreateBuffer();
-		m_StagingBuffer.UploadData(data);
-		CopyBuffer(m_StagingBuffer.GetVKBuffer(), dataSize);
+		m_StagingBuffer.UploadData(data, dataSize);
+		CopyBuffer(m_StagingBuffer.GetVkBuffer(), dataSize);
 	}
 
 	void IndexBuffer::CreateBuffer()
@@ -18,18 +18,18 @@ namespace VE
 		bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-		VK_CHECK(vkCreateBuffer(this->m_Device->GetDevice(), &bufferInfo, nullptr, &this->m_Buffer))
+		VK_CHECK(vkCreateBuffer(this->m_Device->GetVkDevice(), &bufferInfo, nullptr, &this->m_Buffer))
 
 		VkMemoryRequirements memRequirements;
-		vkGetBufferMemoryRequirements(this->m_Device->GetDevice(), this->m_Buffer, &memRequirements);
+		vkGetBufferMemoryRequirements(this->m_Device->GetVkDevice(), this->m_Buffer, &memRequirements);
 
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-		VK_CHECK(vkAllocateMemory(this->m_Device->GetDevice(), &allocInfo, nullptr, &m_DeviceMemory))
-			vkBindBufferMemory(this->m_Device->GetDevice(), this->m_Buffer, m_DeviceMemory, 0);
+		VK_CHECK(vkAllocateMemory(this->m_Device->GetVkDevice(), &allocInfo, nullptr, &m_DeviceMemory))
+			vkBindBufferMemory(this->m_Device->GetVkDevice(), this->m_Buffer, m_DeviceMemory, 0);
 	}
 
 	void IndexBuffer::BindBuffer(VkCommandBuffer commandBuffer) const
@@ -46,7 +46,7 @@ namespace VE
 		allocInfo.commandBufferCount = 1;
 
 		VkCommandBuffer commandBuffer;
-		VK_CHECK(vkAllocateCommandBuffers(this->m_Device->GetDevice(), &allocInfo, &commandBuffer))
+		VK_CHECK(vkAllocateCommandBuffers(this->m_Device->GetVkDevice(), &allocInfo, &commandBuffer))
 
 		VkCommandBufferBeginInfo beginInfo {};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -70,7 +70,7 @@ namespace VE
 		vkQueueSubmit(this->m_Device->GetGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
 		vkQueueWaitIdle(this->m_Device->GetGraphicsQueue());
 
-		vkFreeCommandBuffers(this->m_Device->GetDevice(), this->m_Device->GetCommandPool(), 1, &commandBuffer);
+		vkFreeCommandBuffers(this->m_Device->GetVkDevice(), this->m_Device->GetCommandPool(), 1, &commandBuffer);
 	}
 
 	uint32_t IndexBuffer::GetDataCount() const

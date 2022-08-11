@@ -5,10 +5,13 @@
 
 namespace VE
 {
-	class VertexBuffer : public Buffer
+	class VertexBuffer final : public Buffer
 	{
 	public:
 		VertexBuffer(std::shared_ptr<Device> device, uint64_t dataSize, const void* data);
+
+		VertexBuffer(const VertexBuffer& otherBuffer) = delete;
+		VertexBuffer& operator=(const VertexBuffer& otherBuffer) = delete;
 	public:
 		void BindBuffer(VkCommandBuffer commandBuffer) const override;
 		void CopyBuffer(VkBuffer srcBuffer, VkDeviceSize memSize);

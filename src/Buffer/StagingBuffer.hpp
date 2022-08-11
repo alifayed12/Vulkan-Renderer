@@ -4,10 +4,13 @@
 
 namespace VE
 {
-	class StagingBuffer : public Buffer
+	class StagingBuffer final : public Buffer
 	{
 	public:
 		StagingBuffer(std::shared_ptr<Device> device, uint64_t dataSize);
+
+		StagingBuffer(const StagingBuffer& otherBuffer) = delete;
+		StagingBuffer& operator=(const StagingBuffer& otherBuffer) = delete;
 	public:
 		void BindBuffer(VkCommandBuffer commandBuffer) const override;
 	private:

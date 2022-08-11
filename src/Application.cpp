@@ -5,19 +5,23 @@
 #include "Buffer/VertexBuffer.hpp"
 #include "Buffer/IndexBuffer.hpp"
 
+#include "Descriptor/DescriptorPool.hpp"
+#include "Descriptor/DescriptorSets.hpp"
+
 #include <iostream>
 
 namespace VE
 {
     Application::Application()
         : m_Window(WIDTH, HEIGHT, "Vulkan Engine"),
-            m_Device(std::make_shared<Device>(&m_Window)),
-            m_Renderer(&m_Window, m_Device)
+            m_Device(std::make_shared<Device>(&m_Window))
     {
     }
 
     void Application::Run()
     {
+        ////////////////// This needs to be abstracted in a model/mesh class //////////////////
+
         const std::vector<Vertex> vertices =
         {
             {{-0.5f, -0.5f},    {0.463f, 0.470f, 0.929f}},
@@ -37,15 +41,16 @@ namespace VE
         VertexBuffer vert(m_Device, vertexDataSize, vertices.data());
         IndexBuffer index(m_Device, indexDataSize, indices.data());
 
-        // Model model(vert, index);
-        // m_Renderer.DrawFrame(model);
+        ///////////////////////////////////////////////////////////////////////////////////////
+
+        Renderer renderer(&m_Window, m_Device);
 
         while(!m_Window.ShouldClose())
         {
             m_Window.PollEvents();
-            m_Renderer.DrawFrame(vert, index);
+            renderer.DrawFrame(vert, index);
         }
 
-        vkDeviceWaitIdle(m_Device->GetDevice());
+        vkDeviceWaitIdle(m_Device->GetVkDevice());
     }
 }

@@ -48,7 +48,13 @@
     <ClCompile Include="src\Buffer\IndexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Descriptor\Descriptor.cpp">
+    <ClCompile Include="src\Buffer\UniformBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Descriptor\DescriptorSets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Descriptor\DescriptorPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -932,7 +938,16 @@
     <ClInclude Include="src\Buffer\IndexBuffer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Descriptor\Descriptor.hpp">
+    <ClInclude Include="src\Buffer\UniformBuffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Descriptor\DescriptorSets.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Descriptor\DescriptorPool.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Descriptor\DescriptorSpec.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -36,7 +36,7 @@ namespace VE
         Device(Device&&) = delete;
         Device& operator=(Device&& otherDevice) = delete;
     public:
-        inline VkDevice GetDevice() const { return m_LogicalDevice; }
+        inline VkDevice GetVkDevice() const { return m_LogicalDevice; }
         inline VkPhysicalDevice GetPhysicalDevice() const { return m_PhysicalDevice; }
         inline VkSurfaceKHR GetSurface() const { return m_Surface; }
         inline SwapchainSupportDetails GetSwapchainSupport() const { return QuerySwapchainSupport(m_PhysicalDevice); }

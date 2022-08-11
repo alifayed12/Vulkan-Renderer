@@ -12,11 +12,11 @@ namespace VE
 	{
 		if (m_Buffer)
 		{
-			vkDestroyBuffer(m_Device->GetDevice(), m_Buffer, nullptr);
+			vkDestroyBuffer(m_Device->GetVkDevice(), m_Buffer, nullptr);
 		}
 		if (m_DeviceMemory)
 		{
-			vkFreeMemory(m_Device->GetDevice(), m_DeviceMemory, nullptr);
+			vkFreeMemory(m_Device->GetVkDevice(), m_DeviceMemory, nullptr);
 		}
 	}
 
@@ -37,11 +37,13 @@ namespace VE
 		throw std::runtime_error("Error: Failed to find suitable memory type!");
 	}
 
-	void Buffer::UploadData(const void* memory)
+	void Buffer::UploadData(const void* memory, const uint64_t dataSize)
 	{
+		assert(dataSize == m_DataSize);
+
 		void* data;
-		vkMapMemory(this->m_Device->GetDevice(), m_DeviceMemory, 0, this->m_DataSize, 0, &data);
+		vkMapMemory(this->m_Device->GetVkDevice(), m_DeviceMemory, 0, this->m_DataSize, 0, &data);
 		memcpy(data, memory, static_cast<std::size_t>(this->m_DataSize));
-		vkUnmapMemory(this->m_Device->GetDevice(), m_DeviceMemory);
+		vkUnmapMemory(this->m_Device->GetVkDevice(), m_DeviceMemory);
 	}
 }

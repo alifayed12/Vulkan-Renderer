@@ -113,15 +113,15 @@ namespace VE
         swapchainCreateInfo.clipped = VK_TRUE;
         swapchainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        if(vkCreateSwapchainKHR(m_Device->GetDevice(), &swapchainCreateInfo, nullptr, &m_Swapchain) != VK_SUCCESS)
+        if(vkCreateSwapchainKHR(m_Device->GetVkDevice(), &swapchainCreateInfo, nullptr, &m_Swapchain) != VK_SUCCESS)
         {
             throw std::runtime_error("Error: Failed to create the swapchain!");
         }
 
         uint32_t swapchainImageCount;
-        vkGetSwapchainImagesKHR(m_Device->GetDevice(), m_Swapchain, &swapchainImageCount, nullptr);
+        vkGetSwapchainImagesKHR(m_Device->GetVkDevice(), m_Swapchain, &swapchainImageCount, nullptr);
         m_Images.resize(swapchainImageCount);
-        vkGetSwapchainImagesKHR(m_Device->GetDevice(), m_Swapchain, &swapchainImageCount, m_Images.data());
+        vkGetSwapchainImagesKHR(m_Device->GetVkDevice(), m_Swapchain, &swapchainImageCount, m_Images.data());
 
         m_ImageFormat = format.format;
         m_ImageExtent = extent;
@@ -153,7 +153,7 @@ namespace VE
                             0,
                             1
                     };
-            if(vkCreateImageView(m_Device->GetDevice(), &imageViewCreateInfo, nullptr, &m_ImageViews[i]) != VK_SUCCESS)
+            if(vkCreateImageView(m_Device->GetVkDevice(), &imageViewCreateInfo, nullptr, &m_ImageViews[i]) != VK_SUCCESS)
             {
                 throw std::runtime_error("Error: Failed to create an ImageView!");
             }
@@ -175,9 +175,9 @@ namespace VE
 
         for (uint32_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
         {
-            if (vkCreateSemaphore(m_Device->GetDevice(), &semaphoreInfo, nullptr, &m_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
-                vkCreateSemaphore(m_Device->GetDevice(), &semaphoreInfo, nullptr, &m_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
-                vkCreateFence(m_Device->GetDevice(), &fenceInfo, nullptr, &m_InFlightFences[i]) != VK_SUCCESS)
+            if (vkCreateSemaphore(m_Device->GetVkDevice(), &semaphoreInfo, nullptr, &m_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
+                vkCreateSemaphore(m_Device->GetVkDevice(), &semaphoreInfo, nullptr, &m_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
+                vkCreateFence(m_Device->GetVkDevice(), &fenceInfo, nullptr, &m_InFlightFences[i]) != VK_SUCCESS)
             {
                 throw std::runtime_error("Error: Failed to create semaphores!");
             }
@@ -222,7 +222,7 @@ namespace VE
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &dependency;
 
-        if (vkCreateRenderPass(m_Device->GetDevice(), &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS) {
+        if (vkCreateRenderPass(m_Device->GetVkDevice(), &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS) {
             throw std::runtime_error("Error: Failed to create render pass!");
         }
     }
@@ -246,7 +246,7 @@ namespace VE
             framebufferInfo.height = m_ImageExtent.height;
             framebufferInfo.layers = 1;
 
-            if (vkCreateFramebuffer(m_Device->GetDevice(), &framebufferInfo, nullptr, &m_Framebuffers[i]) != VK_SUCCESS)
+            if (vkCreateFramebuffer(m_Device->GetVkDevice(), &framebufferInfo, nullptr, &m_Framebuffers[i]) != VK_SUCCESS)
             {
                 throw std::runtime_error("Error: Failed to create framebuffer!");
             }
@@ -255,7 +255,7 @@ namespace VE
 
     void Swapchain::RecreateSwapchain()
     {
-        vkDeviceWaitIdle(m_Device->GetDevice());
+        vkDeviceWaitIdle(m_Device->GetVkDevice());
 
         CleanSwapchain();
 
@@ -266,8 +266,8 @@ namespace VE
 
     VkResult Swapchain::AcquireNextImage(uint32_t* currentImageIndex)
     {
-        vkWaitForFences(m_Device->GetDevice(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
-        VkResult result = vkAcquireNextImageKHR(m_Device->GetDevice(), m_Swapchain, std::numeric_limits<uint64_t>::max(), m_ImageAvailableSemaphores[m_CurrentFrame], VK_NULL_HANDLE, currentImageIndex);
+        vkWaitForFences(m_Device->GetVkDevice(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
+        VkResult result = vkAcquireNextImageKHR(m_Device->GetVkDevice(), m_Swapchain, std::numeric_limits<uint64_t>::max(), m_ImageAvailableSemaphores[m_CurrentFrame], VK_NULL_HANDLE, currentImageIndex);
 
         return result;
     }
@@ -278,16 +278,16 @@ namespace VE
         {
             for (VkFramebuffer framebuffer : m_Framebuffers)
             {
-                vkDestroyFramebuffer(m_Device->GetDevice(), framebuffer, nullptr);
+                vkDestroyFramebuffer(m_Device->GetVkDevice(), framebuffer, nullptr);
             }
         }
         for (size_t i = 0; i < m_ImageViews.size(); i++)
         {
-            vkDestroyImageView(m_Device->GetDevice(), m_ImageViews[i], nullptr);
+            vkDestroyImageView(m_Device->GetVkDevice(), m_ImageViews[i], nullptr);
         }
         if (m_Swapchain != VK_NULL_HANDLE)
         {
-            vkDestroySwapchainKHR(m_Device->GetDevice(), m_Swapchain, nullptr);
+            vkDestroySwapchainKHR(m_Device->GetVkDevice(), m_Swapchain, nullptr);
         }
     }
 
@@ -299,26 +299,26 @@ namespace VE
         {
             for (uint32_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
             {
-                vkDestroySemaphore(m_Device->GetDevice(), m_ImageAvailableSemaphores[i], nullptr);
+                vkDestroySemaphore(m_Device->GetVkDevice(), m_ImageAvailableSemaphores[i], nullptr);
             }
         }
         if (m_RenderFinishedSemaphores.size() > 0)
         {
             for (uint32_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
             {
-                vkDestroySemaphore(m_Device->GetDevice(), m_RenderFinishedSemaphores[i], nullptr);
+                vkDestroySemaphore(m_Device->GetVkDevice(), m_RenderFinishedSemaphores[i], nullptr);
             }
         }
         if (m_InFlightFences.size() > 0)
         {
             for (uint32_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
             {
-                vkDestroyFence(m_Device->GetDevice(), m_InFlightFences[i], nullptr);
+                vkDestroyFence(m_Device->GetVkDevice(), m_InFlightFences[i], nullptr);
             }
         }
         if (m_RenderPass != VK_NULL_HANDLE)
         {
-            vkDestroyRenderPass(m_Device->GetDevice(), m_RenderPass, nullptr);
+            vkDestroyRenderPass(m_Device->GetVkDevice(), m_RenderPass, nullptr);
         }
     }
 }

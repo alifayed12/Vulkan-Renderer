@@ -8,13 +8,24 @@
 namespace VE
 {
 	Renderer::Renderer(Window* window, std::shared_ptr<Device> device)
-		: m_Window(window), m_Device(device), m_Swapchain(std::make_shared<Swapchain>(m_Device, m_Window)),
-			m_Pipeline(m_Device, m_Swapchain), m_CurrentImageIndex{}
+		:	m_Window(window), m_Device(device), m_Swapchain(std::make_shared<Swapchain>(m_Device, m_Window)),
+			m_PipelineLayout(VK_NULL_HANDLE), m_Pipeline(nullptr),
+			m_CurrentImageIndex{}
 	{
-		CreateCommandBuffer();
+		CreateCommandBuffers();
+		CreatePipelineLayout();
+		CreatePipeline();
 	}
 
-	void Renderer::CreateCommandBuffer()
+	Renderer::~Renderer()
+	{
+		if (m_PipelineLayout)
+		{
+			vkDestroyPipelineLayout(m_Device->GetVkDevice(), m_PipelineLayout, nullptr);
+		}
+	}
+
+	void Renderer::CreateCommandBuffers()
 	{
 		m_CommandBuffers.resize(Swapchain::MAX_FRAMES_IN_FLIGHT);
 
@@ -24,7 +35,46 @@ namespace VE
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandBufferCount = static_cast<uint32_t>(m_CommandBuffers.size());
 
-		VK_CHECK(vkAllocateCommandBuffers(m_Device->GetDevice(), &allocInfo, m_CommandBuffers.data()))
+		VK_CHECK(vkAllocateCommandBuffers(m_Device->GetVkDevice(), &allocInfo, m_CommandBuffers.data()))
+	}
+
+	void Renderer::CreatePipelineLayout()
+	{
+		VkPipelineLayoutCreateInfo layoutCreateInfo{};
+		layoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+
+		VK_CHECK(vkCreatePipelineLayout(m_Device->GetVkDevice(), &layoutCreateInfo, nullptr, &m_PipelineLayout))
+	}
+
+	void Renderer::CreatePipeline()
+	{
+		PipelineConfigInfo pipelineConfig{};
+		Pipeline::DefaultPipelineConfig(pipelineConfig);
+
+		VkVertexInputBindingDescription bindingDesc{};
+		bindingDesc.binding = 0;
+		bindingDesc.stride = sizeof(Vertex);
+		bindingDesc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+		pipelineConfig.bindingDescriptions.push_back(bindingDesc);
+
+		VkVertexInputAttributeDescription posDesc{};
+		posDesc.binding = 0;
+		posDesc.location = 0;
+		posDesc.format = VK_FORMAT_R32G32_SFLOAT;
+		posDesc.offset = offsetof(Vertex, position);
+		pipelineConfig.attributeDescriptions.push_back(posDesc);
+
+		VkVertexInputAttributeDescription colorDesc{};
+		colorDesc.binding = 0;
+		colorDesc.location = 1;
+		colorDesc.format = VK_FORMAT_R32G32B32_SFLOAT;
+		colorDesc.offset = offsetof(Vertex, color);
+		pipelineConfig.attributeDescriptions.push_back(colorDesc);
+
+		pipelineConfig.renderPass = m_Swapchain->GetRenderPass();
+		pipelineConfig.pipelineLayout = m_PipelineLayout;
+
+		m_Pipeline = std::make_unique<Pipeline>(m_Device, pipelineConfig);
 	}
 
 	void Renderer::DrawFrame(const VertexBuffer& vertexBuffer, const IndexBuffer& indexBuffer)
@@ -45,7 +95,7 @@ namespace VE
 		scissor.offset = { 0, 0 };
 		scissor.extent = m_Swapchain->GetExtent();
 
-		vkCmdBindPipeline(currCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline.GetGraphicsPipeline());
+		vkCmdBindPipeline(currCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetGraphicsPipeline());
 		vkCmdSetViewport(currCommandBuffer, 0, 1, &viewport);
 		vkCmdSetScissor(currCommandBuffer, 0, 1, &scissor);
 
@@ -71,13 +121,13 @@ namespace VE
 			throw std::runtime_error("Error: Failed to acquire swap chain image!");
 		}
 
-		vkResetFences(m_Device->GetDevice(), 1, &m_Swapchain->GetInFlightFences()[m_Swapchain->GetCurrentFrame()]);
+		vkResetFences(m_Device->GetVkDevice(), 1, &m_Swapchain->GetInFlightFences()[m_Swapchain->GetCurrentFrame()]);
 		vkResetCommandBuffer(commandBuffer, 0);
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		beginInfo.flags = 0; // Optional
-		beginInfo.pInheritanceInfo = nullptr; // Optional
+		beginInfo.flags = 0;					// Optional
+		beginInfo.pInheritanceInfo = nullptr;	// Optional
 
 		VK_CHECK(vkBeginCommandBuffer(m_CommandBuffers[m_Swapchain->GetCurrentFrame()], &beginInfo))
 

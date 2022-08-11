@@ -11,25 +11,45 @@
 
 namespace VE
 {
+    struct PipelineConfigInfo {
+        PipelineConfigInfo() = default;
+        PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+        PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+
+        std::vector<VkVertexInputBindingDescription>    bindingDescriptions{};
+        std::vector<VkVertexInputAttributeDescription>  attributeDescriptions{};
+        VkPipelineViewportStateCreateInfo               viewportInfo{};
+        VkPipelineInputAssemblyStateCreateInfo          inputAssemblyInfo{};
+        VkPipelineRasterizationStateCreateInfo          rasterizationInfo{};
+        VkPipelineMultisampleStateCreateInfo            multisampleInfo{};
+        VkPipelineColorBlendAttachmentState             colorBlendAttachment{};
+        VkPipelineColorBlendStateCreateInfo             colorBlendInfo{};
+        VkPipelineDepthStencilStateCreateInfo           depthStencilInfo{};
+        std::vector<VkDynamicState>                     dynamicStateEnables{};
+        VkPipelineDynamicStateCreateInfo                dynamicStateInfo{};
+        VkPipelineLayout                                pipelineLayout{};
+        VkRenderPass                                    renderPass{};
+        uint32_t                                        subpass{};
+    };
+
     class Pipeline
     {
     public:
-        Pipeline(std::shared_ptr<Device> device, std::shared_ptr<Swapchain> swapchain);
+        Pipeline(std::shared_ptr<Device> device, const PipelineConfigInfo& configInfo);
         ~Pipeline();
 
         Pipeline(const Pipeline& otherPipeline) = delete;
         Pipeline& operator=(const Pipeline& otherPipeline) = delete;
     public:
         inline VkPipeline GetGraphicsPipeline() const { return m_GraphicsPipeline; }
+        static void DefaultPipelineConfig(PipelineConfigInfo& configInfo);
     private:
         std::vector<char> ReadShaderFile(std::string_view filepath) const;
         VkShaderModule CreateShaderModule(std::span<char> shaderCode) const;
-        void CreateGraphicsPipeline();
+        void CreateGraphicsPipeline(const PipelineConfigInfo& configInfo);
         void Clean();
     private:
-        VkPipeline          m_GraphicsPipeline;
-        VkPipelineLayout    m_PipelineLayout;
-        std::shared_ptr<Device>     m_Device;
-        std::shared_ptr<Swapchain>  m_Swapchain;
+        std::shared_ptr<Device>             m_Device;
+        VkPipeline                          m_GraphicsPipeline;
     };
 }
