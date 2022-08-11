@@ -17,9 +17,12 @@ namespace VE
         Window& operator=(const Window& otherWindow) = delete;
     public:
         void InitWindow();
+    public:
         inline bool ShouldClose() const { return glfwWindowShouldClose(m_Window); }
         inline GLFWwindow* GetGLFWWindow() const { return m_Window; }
         inline void PollEvents() const { glfwPollEvents(); }
+        inline int GetWidth() const { return m_Width; }
+        inline int GetHeight() const { return m_Height; }
     private:
         int m_Width;
         int m_Height;

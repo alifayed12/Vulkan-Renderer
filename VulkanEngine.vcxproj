@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Descriptor\DescriptorPool.cpp" />
     <ClCompile Include="src\Descriptor\DescriptorSets.cpp" />
     <ClCompile Include="src\Buffer\IndexBuffer.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="src\Buffer\UniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Model.hpp" />
     <ClInclude Include="src\Descriptor\DescriptorPool.hpp" />
     <ClInclude Include="src\Descriptor\DescriptorSets.hpp" />
     <ClInclude Include="src\Buffer\IndexBuffer.hpp" />

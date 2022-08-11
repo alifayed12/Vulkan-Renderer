@@ -1,9 +1,14 @@
 #include "Renderer.hpp"
 
+#include "glm/glm.hpp"
+#include "glm/gtx/transform.hpp"
+
 #include "Utilities.hpp"
 
 #include <stdexcept>
 #include <cassert>
+#include <chrono>
+#include <iostream>
 
 namespace VE
 {
@@ -77,7 +82,7 @@ namespace VE
 		m_Pipeline = std::make_unique<Pipeline>(m_Device, pipelineConfig);
 	}
 
-	void Renderer::DrawFrame(const VertexBuffer& vertexBuffer, const IndexBuffer& indexBuffer)
+	void Renderer::DrawFrame(const Model& model)
 	{
 		VkCommandBuffer currCommandBuffer = GetCurrentCommandBuffer();
 		BeginFrame(currCommandBuffer);
@@ -99,10 +104,10 @@ namespace VE
 		vkCmdSetViewport(currCommandBuffer, 0, 1, &viewport);
 		vkCmdSetScissor(currCommandBuffer, 0, 1, &scissor);
 
-		vertexBuffer.BindBuffer(currCommandBuffer);
-		indexBuffer.BindBuffer(currCommandBuffer);
+		model.Bind(currCommandBuffer);
+		model.Draw(currCommandBuffer);
 
-		vkCmdDrawIndexed(currCommandBuffer, indexBuffer.GetDataCount(), 1, 0, 0, 0);
+		//vkCmdDrawIndexed(currCommandBuffer, indexBuffer.GetDataCount(), 1, 0, 0, 0);
 
 		EndFrame(currCommandBuffer);
 	}

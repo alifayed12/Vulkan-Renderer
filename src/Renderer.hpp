@@ -6,9 +6,7 @@
 #include "Device.hpp"
 #include "Swapchain.hpp"
 #include "Pipeline.hpp"
-
-#include "Buffer/VertexBuffer.hpp"
-#include "Buffer/IndexBuffer.hpp"
+#include "Model.hpp"
 
 #include "Descriptor/DescriptorSets.hpp"
 #include "Descriptor/DescriptorPool.hpp"
@@ -27,7 +25,7 @@ namespace VE
 		Renderer(const Renderer& otherRenderer) = delete;
 		Renderer& operator=(const Renderer& otherRenderer) = delete;
 	public:
-		void DrawFrame(const VertexBuffer& vertexBuffer, const IndexBuffer& indexBuffer);
+		void DrawFrame(const Model& model);
 	private:
 		void CreateCommandBuffers();
 		void CreatePipelineLayout();

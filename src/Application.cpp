@@ -2,8 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Buffer/VertexBuffer.hpp"
-#include "Buffer/IndexBuffer.hpp"
+#include "Model.hpp"
 
 #include "Descriptor/DescriptorPool.hpp"
 #include "Descriptor/DescriptorSets.hpp"
@@ -20,8 +19,6 @@ namespace VE
 
     void Application::Run()
     {
-        ////////////////// This needs to be abstracted in a model/mesh class //////////////////
-
         const std::vector<Vertex> vertices =
         {
             {{-0.5f, -0.5f},    {0.463f, 0.470f, 0.929f}},
@@ -35,20 +32,15 @@ namespace VE
             0, 1, 2, 2, 3, 0
         };
 
-        uint64_t vertexDataSize = static_cast<uint64_t>(vertices.size()) * sizeof(Vertex);
-        uint64_t indexDataSize = static_cast<uint64_t>(indices.size()) * sizeof(uint16_t);
-
-        VertexBuffer vert(m_Device, vertexDataSize, vertices.data());
-        IndexBuffer index(m_Device, indexDataSize, indices.data());
-
-        ///////////////////////////////////////////////////////////////////////////////////////
+        Model rectangle(m_Device, vertices, indices);
 
         Renderer renderer(&m_Window, m_Device);
+        //renderer.SetGlobalDescriptorSet();
 
         while(!m_Window.ShouldClose())
         {
             m_Window.PollEvents();
-            renderer.DrawFrame(vert, index);
+            renderer.DrawFrame(rectangle);
         }
 
         vkDeviceWaitIdle(m_Device->GetVkDevice());
