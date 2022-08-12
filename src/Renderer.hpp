@@ -27,7 +27,7 @@ namespace VE
 	class Renderer
 	{
 	public:
-		Renderer(Window* window, std::shared_ptr<Device> device);
+		Renderer(Window* window, Device* device);
 		~Renderer();
 
 		Renderer(const Renderer& otherRenderer) = delete;
@@ -42,12 +42,12 @@ namespace VE
 		void BeginFrame(VkCommandBuffer commandBuffer);
 		void EndFrame(VkCommandBuffer commandBuffer);
 	private:
-		inline VkCommandBuffer GetCurrentCommandBuffer() const { return m_CommandBuffers[m_Swapchain->GetCurrentFrame()]; }
+		inline VkCommandBuffer GetCurrentCommandBuffer() const { return m_CommandBuffers[m_Swapchain.GetCurrentFrame()]; }
 	private:
 		std::vector<VkCommandBuffer>	m_CommandBuffers;
 		Window*							m_Window;
-		std::shared_ptr<Device>			m_Device;
-		std::shared_ptr<Swapchain>		m_Swapchain;
+		Device*							m_Device;
+		Swapchain						m_Swapchain;
 		VkPipelineLayout				m_PipelineLayout;
 		std::unique_ptr<Pipeline>		m_Pipeline;
 		DescriptorSet					m_DescriptorSet;

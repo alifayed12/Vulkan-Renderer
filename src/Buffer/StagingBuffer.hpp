@@ -7,7 +7,7 @@ namespace VE
 	class StagingBuffer final : public Buffer
 	{
 	public:
-		StagingBuffer(std::shared_ptr<Device> device, uint64_t dataSize);
+		StagingBuffer(Device* device, uint64_t dataSize);
 
 		StagingBuffer(const StagingBuffer& otherBuffer) = delete;
 		StagingBuffer& operator=(const StagingBuffer& otherBuffer) = delete;

@@ -8,7 +8,7 @@ namespace VE
 	class IndexBuffer final : public Buffer
 	{
 	public:
-		IndexBuffer(std::shared_ptr<Device> device, uint64_t dataSize, const void* data);
+		IndexBuffer(Device* device, uint64_t dataSize, const void* data);
 
 		IndexBuffer(const IndexBuffer& otherBuffer) = delete;
 		IndexBuffer& operator=(const IndexBuffer& otherBuffer) = delete;

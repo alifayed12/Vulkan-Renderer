@@ -2,7 +2,7 @@
 
 namespace VE
 {
-	UniformBuffer::UniformBuffer(std::shared_ptr<Device> device, uint64_t dataSize)
+	UniformBuffer::UniformBuffer(Device* device, uint64_t dataSize)
 		: Buffer(device, dataSize)
 	{
 		CreateBuffer();

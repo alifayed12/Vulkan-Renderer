@@ -10,7 +10,7 @@ namespace VE
 {
     Application::Application()
         : m_Window(WIDTH, HEIGHT, "Vulkan Engine"),
-            m_Device(std::make_shared<Device>(&m_Window))
+            m_Device(&m_Window)
     {
     }
 
@@ -29,10 +29,10 @@ namespace VE
             0, 1, 2, 2, 3, 0
         };
 
-        Model rectangle(m_Device, vertices, indices);
+        Model rectangle(&m_Device, vertices, indices);
         //Model car("ModelPath.file");
 
-        Renderer renderer(&m_Window, m_Device);
+        Renderer renderer(&m_Window, &m_Device);
 
         while(!m_Window.ShouldClose())
         {
@@ -40,6 +40,6 @@ namespace VE
             renderer.DrawFrame(rectangle);
         }
 
-        vkDeviceWaitIdle(m_Device->GetVkDevice());
+        vkDeviceWaitIdle(m_Device.GetVkDevice());
     }
 }

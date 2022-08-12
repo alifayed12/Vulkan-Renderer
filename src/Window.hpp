@@ -10,7 +10,7 @@ namespace VE
     class Window
     {
     public:
-        Window(int width, int height, const std::string& windowTitle);
+        Window(uint32_t width, uint32_t height, const std::string& windowTitle);
         ~Window();
 
         Window(const Window& otherWindow) = delete;
@@ -24,8 +24,8 @@ namespace VE
         inline int GetWidth() const { return m_Width; }
         inline int GetHeight() const { return m_Height; }
     private:
-        int m_Width;
-        int m_Height;
+        uint32_t m_Width;
+        uint32_t m_Height;
         std::string m_WindowTitle;
         GLFWwindow* m_Window;
     };

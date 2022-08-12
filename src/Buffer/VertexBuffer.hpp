@@ -8,7 +8,7 @@ namespace VE
 	class VertexBuffer final : public Buffer
 	{
 	public:
-		VertexBuffer(std::shared_ptr<Device> device, uint64_t dataSize, const void* data);
+		VertexBuffer(Device* device, uint64_t dataSize, const void* data);
 
 		VertexBuffer(const VertexBuffer& otherBuffer) = delete;
 		VertexBuffer& operator=(const VertexBuffer& otherBuffer) = delete;

@@ -21,7 +21,7 @@ namespace VE
 	class DescriptorSet
 	{
 	public:
-		DescriptorSet(std::shared_ptr<Device> device);
+		DescriptorSet(Device* device);
 		~DescriptorSet();
 	public:
 		inline const std::vector<VkDescriptorSetLayout>& GetDescriptorSetLayouts() const { return m_DescriptorSetLayouts; }
@@ -32,7 +32,7 @@ namespace VE
 	private:
 		void CreateDescriptorPool(const uint32_t numUniformDescriptors);
 	private:
-		std::shared_ptr<Device>				m_Device;
+		Device*								m_Device;
 		VkDescriptorPool					m_DescriptorPool;
 		std::vector<VkDescriptorSetLayout>	m_DescriptorSetLayouts;
 		std::vector<VkDescriptorSet>		m_DescriptorSets;

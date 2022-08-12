@@ -21,7 +21,7 @@ namespace VE
 	class Buffer
 	{
 	public:
-		Buffer(std::shared_ptr<Device>, uint64_t dataSize);
+		Buffer(Device*, uint64_t dataSize);
 		virtual ~Buffer();
 	public:
 		inline VkBuffer GetVkBuffer() const { return m_Buffer; }
@@ -35,10 +35,10 @@ namespace VE
 		virtual void CreateBuffer() = 0;
 		virtual uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
 	protected:
-		std::shared_ptr<Device>		m_Device;
-		VkBuffer					m_Buffer;
-		VkDeviceMemory				m_DeviceMemory;
-		uint64_t					m_DataSize;
+		Device*			m_Device;
+		VkBuffer		m_Buffer;
+		VkDeviceMemory	m_DeviceMemory;
+		uint64_t		m_DataSize;
 	};
 }
 

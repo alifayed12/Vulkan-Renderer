@@ -35,7 +35,7 @@ namespace VE
     class Pipeline
     {
     public:
-        Pipeline(std::shared_ptr<Device> device, const PipelineConfigInfo& configInfo);
+        Pipeline(Device* device, const PipelineConfigInfo& configInfo);
         ~Pipeline();
 
         Pipeline(const Pipeline& otherPipeline) = delete;
@@ -49,7 +49,7 @@ namespace VE
         void CreateGraphicsPipeline(const PipelineConfigInfo& configInfo);
         void Clean();
     private:
-        std::shared_ptr<Device>             m_Device;
-        VkPipeline                          m_GraphicsPipeline;
+        Device*     m_Device;
+        VkPipeline  m_GraphicsPipeline;
     };
 }

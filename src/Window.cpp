@@ -2,7 +2,7 @@
 
 namespace VE
 {
-    Window::Window(int width, int height, const std::string& windowTitle)
+    Window::Window(uint32_t width, uint32_t height, const std::string& windowTitle)
         : m_Width(width), m_Height(height), m_WindowTitle(windowTitle), m_Window(nullptr)
     {
         InitWindow();

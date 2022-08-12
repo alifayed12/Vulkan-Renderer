@@ -18,10 +18,10 @@ namespace VE
     public:
         void Run();
     public:
-        static constexpr int WIDTH = 900;
-        static constexpr int HEIGHT = 600;
+        static constexpr int WIDTH = 1280;
+        static constexpr int HEIGHT = 720;
     private:
-        Window                  m_Window;
-        std::shared_ptr<Device> m_Device;
+        Window  m_Window;
+        Device  m_Device;
     };
 }

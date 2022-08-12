@@ -7,7 +7,7 @@
 
 namespace VE
 {
-    Pipeline::Pipeline(std::shared_ptr<Device> device, const PipelineConfigInfo& configInfo)
+    Pipeline::Pipeline(Device* device, const PipelineConfigInfo& configInfo)
         :   m_Device(device), m_GraphicsPipeline(VK_NULL_HANDLE)
     {
         CreateGraphicsPipeline(configInfo);

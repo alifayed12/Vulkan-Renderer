@@ -6,7 +6,7 @@
 
 namespace VE
 {
-    Swapchain::Swapchain(std::shared_ptr<Device> device, Window* window)
+    Swapchain::Swapchain(Device* device, Window* window)
         : m_Swapchain(VK_NULL_HANDLE), m_Device(device), m_Window(window),
             m_ImageFormat{}, m_ImageExtent{}, m_RenderPass(VK_NULL_HANDLE),
             m_CurrentFrame(0)

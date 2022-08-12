@@ -2,7 +2,7 @@
 
 namespace VE
 {
-	IndexBuffer::IndexBuffer(std::shared_ptr<Device> device, uint64_t dataSize, const void* data)
+	IndexBuffer::IndexBuffer(Device* device, uint64_t dataSize, const void* data)
 		: Buffer(device, dataSize), m_StagingBuffer(device, dataSize)
 	{
 		CreateBuffer();

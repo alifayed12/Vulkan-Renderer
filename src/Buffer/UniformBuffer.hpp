@@ -7,7 +7,7 @@ namespace VE
 	class UniformBuffer final : public Buffer
 	{
 	public:
-		UniformBuffer(std::shared_ptr<Device> device, uint64_t dataSize);
+		UniformBuffer(Device* device, uint64_t dataSize);
 
 		UniformBuffer(const UniformBuffer& otherBuffer) = delete;
 		UniformBuffer& operator=(const UniformBuffer& otherBuffer) = delete;

@@ -16,7 +16,7 @@ namespace VE
 	class Model
 	{
 	public:
-		Model(std::shared_ptr<Device> device, const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
+		Model(Device* device, const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
 		~Model() = default;
 
 		Model(const Model& otherModel) = delete;

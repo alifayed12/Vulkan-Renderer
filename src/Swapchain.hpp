@@ -12,7 +12,7 @@ namespace VE
     class Swapchain
     {
     public:
-        Swapchain(std::shared_ptr<Device> device, Window* window);
+        Swapchain(Device* device, Window* window);
         ~Swapchain();
 
         Swapchain(const Swapchain& otherSwapchain) = delete;
@@ -47,7 +47,7 @@ namespace VE
         void Clean();
     private:
         VkSwapchainKHR              m_Swapchain;
-        std::shared_ptr<Device>     m_Device;
+        Device*                     m_Device;
         Window*                     m_Window;
         VkFormat                    m_ImageFormat;
         VkExtent2D                  m_ImageExtent;

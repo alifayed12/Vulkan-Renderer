@@ -6,7 +6,7 @@
 
 namespace VE
 {
-	DescriptorSet::DescriptorSet(std::shared_ptr<Device> device)
+	DescriptorSet::DescriptorSet(Device* device)
 		:	m_Device(device), m_DescriptorPool(VK_NULL_HANDLE)
 	{
 	}

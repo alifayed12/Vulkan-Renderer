@@ -2,7 +2,7 @@
 
 namespace VE
 {
-	Buffer::Buffer(std::shared_ptr<Device> device, uint64_t dataSize)
+	Buffer::Buffer(Device* device, uint64_t dataSize)
 		: m_Device(device), m_Buffer(VK_NULL_HANDLE),
 			m_DeviceMemory(VK_NULL_HANDLE), m_DataSize(dataSize)
 	{

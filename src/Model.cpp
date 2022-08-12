@@ -2,7 +2,7 @@
 
 namespace VE
 {
-	Model::Model(std::shared_ptr<Device> device, const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices)
+	Model::Model(Device* device, const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices)
 		:	m_VertexBuffer(device, vertices.size() * sizeof(Vertex), vertices.data()),
 			m_IndexBuffer(device, indices.size() * sizeof(uint16_t), indices.data()),
 			m_Transform(1.0f)
