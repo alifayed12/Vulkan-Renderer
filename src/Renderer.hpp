@@ -8,14 +8,22 @@
 #include "Pipeline.hpp"
 #include "Model.hpp"
 
-#include "Descriptor/DescriptorSets.hpp"
-#include "Descriptor/DescriptorPool.hpp"
+#include "Buffer/UniformBuffer.hpp"
+
+#include "Descriptor/DescriptorSet.hpp"
 
 #include <vector>
 #include <memory>
 
 namespace VE
 {
+	struct UniformBufferObject
+	{
+		glm::mat4 model;
+		glm::mat4 view;
+		glm::mat4 proj;
+	};
+
 	class Renderer
 	{
 	public:
@@ -28,6 +36,7 @@ namespace VE
 		void DrawFrame(const Model& model);
 	private:
 		void CreateCommandBuffers();
+		void CreateDescriptorSet();
 		void CreatePipelineLayout();
 		void CreatePipeline();
 		void BeginFrame(VkCommandBuffer commandBuffer);
@@ -41,7 +50,11 @@ namespace VE
 		std::shared_ptr<Swapchain>		m_Swapchain;
 		VkPipelineLayout				m_PipelineLayout;
 		std::unique_ptr<Pipeline>		m_Pipeline;
+		DescriptorSet					m_DescriptorSet;
 		uint32_t						m_CurrentImageIndex;
+
+		UniformBuffer					m_UniformBuffer;
+		UniformBufferObject				m_UBO;
 	};
 }
 

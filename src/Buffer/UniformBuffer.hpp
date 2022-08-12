@@ -11,8 +11,6 @@ namespace VE
 
 		UniformBuffer(const UniformBuffer& otherBuffer) = delete;
 		UniformBuffer& operator=(const UniformBuffer& otherBuffer) = delete;
-	public:
-		void UpdateBuffer(const void* data, const uint64_t dataSize);
 	private:
 		void BindBuffer(VkCommandBuffer commandBuffer) const override;
 		void CreateBuffer() override;

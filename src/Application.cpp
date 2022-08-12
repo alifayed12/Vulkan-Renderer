@@ -4,9 +4,6 @@
 
 #include "Model.hpp"
 
-#include "Descriptor/DescriptorPool.hpp"
-#include "Descriptor/DescriptorSets.hpp"
-
 #include <iostream>
 
 namespace VE
@@ -33,9 +30,9 @@ namespace VE
         };
 
         Model rectangle(m_Device, vertices, indices);
+        //Model car("ModelPath.file");
 
         Renderer renderer(&m_Window, m_Device);
-        //renderer.SetGlobalDescriptorSet();
 
         while(!m_Window.ShouldClose())
         {

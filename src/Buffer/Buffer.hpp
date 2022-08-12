@@ -26,6 +26,7 @@ namespace VE
 	public:
 		inline VkBuffer GetVkBuffer() const { return m_Buffer; }
 		inline VkDeviceMemory GetVkDeviceMemory() const { return m_DeviceMemory; }
+		inline uint64_t GetDataSize() const { return m_DataSize; }
 	public:
 		virtual void UploadData(const void* memory, const uint64_t dataSize);
 		virtual void BindBuffer(VkCommandBuffer commandBuffer) const = 0;

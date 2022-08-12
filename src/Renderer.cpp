@@ -9,15 +9,17 @@
 #include <cassert>
 #include <chrono>
 #include <iostream>
+#include <unordered_map>
 
 namespace VE
 {
 	Renderer::Renderer(Window* window, std::shared_ptr<Device> device)
 		:	m_Window(window), m_Device(device), m_Swapchain(std::make_shared<Swapchain>(m_Device, m_Window)),
-			m_PipelineLayout(VK_NULL_HANDLE), m_Pipeline(nullptr),
-			m_CurrentImageIndex{}
+			m_PipelineLayout(VK_NULL_HANDLE), m_Pipeline(nullptr), m_DescriptorSet(m_Device),
+			m_CurrentImageIndex{}, m_UniformBuffer(m_Device, sizeof(UniformBufferObject))
 	{
 		CreateCommandBuffers();
+		CreateDescriptorSet();
 		CreatePipelineLayout();
 		CreatePipeline();
 	}
@@ -43,10 +45,22 @@ namespace VE
 		VK_CHECK(vkAllocateCommandBuffers(m_Device->GetVkDevice(), &allocInfo, m_CommandBuffers.data()))
 	}
 
+	void Renderer::CreateDescriptorSet()
+	{
+		std::vector<uint32_t> descriptorInfo = 
+		{
+			{1}, {1}
+		};
+
+		m_DescriptorSet.Create(descriptorInfo);
+	}
+
 	void Renderer::CreatePipelineLayout()
 	{
 		VkPipelineLayoutCreateInfo layoutCreateInfo{};
 		layoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		layoutCreateInfo.setLayoutCount = m_DescriptorSet.GetDescriptorSetLayouts().size();
+		layoutCreateInfo.pSetLayouts = m_DescriptorSet.GetDescriptorSetLayouts().data();
 
 		VK_CHECK(vkCreatePipelineLayout(m_Device->GetVkDevice(), &layoutCreateInfo, nullptr, &m_PipelineLayout))
 	}
@@ -104,10 +118,17 @@ namespace VE
 		vkCmdSetViewport(currCommandBuffer, 0, 1, &viewport);
 		vkCmdSetScissor(currCommandBuffer, 0, 1, &scissor);
 
+		static auto startTime = std::chrono::high_resolution_clock::now();
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+		m_UBO.model = glm::scale(glm::vec3(std::abs(std::cosf(time)) + 0.2f));
+		m_UniformBuffer.UploadData(&m_UBO, sizeof(m_UBO));
+		m_DescriptorSet.Update(m_Swapchain->GetCurrentFrame(), 0, &m_UniformBuffer);
+		m_DescriptorSet.Bind(currCommandBuffer, m_PipelineLayout, m_Swapchain->GetCurrentFrame());
+
 		model.Bind(currCommandBuffer);
 		model.Draw(currCommandBuffer);
-
-		//vkCmdDrawIndexed(currCommandBuffer, indexBuffer.GetDataCount(), 1, 0, 0, 0);
 
 		EndFrame(currCommandBuffer);
 	}

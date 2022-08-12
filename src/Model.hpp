@@ -18,6 +18,9 @@ namespace VE
 	public:
 		Model(std::shared_ptr<Device> device, const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
 		~Model() = default;
+
+		Model(const Model& otherModel) = delete;
+		Model& operator=(const Model& otherModel) = delete;
 	public:
 		void Bind(VkCommandBuffer commandBuffer) const;
 		void Draw(VkCommandBuffer commandBuffer) const;
