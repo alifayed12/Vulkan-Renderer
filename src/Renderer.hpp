@@ -17,13 +17,6 @@
 
 namespace VE
 {
-	struct UniformBufferObject
-	{
-		glm::mat4 model;
-		glm::mat4 view;
-		glm::mat4 proj;
-	};
-
 	class Renderer
 	{
 	public:
@@ -53,8 +46,7 @@ namespace VE
 		DescriptorSet					m_DescriptorSet;
 		uint32_t						m_CurrentImageIndex;
 
-		UniformBuffer					m_UniformBuffer;
-		UniformBufferObject				m_UBO;
+		DescriptorSet::UniformBufferObject m_UBO;
 	};
 }
 

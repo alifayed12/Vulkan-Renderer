@@ -16,7 +16,7 @@ namespace VE
 	Renderer::Renderer(Window* window, Device* device)
 		:	m_Window(window), m_Device(device), m_Swapchain(m_Device, m_Window),
 			m_PipelineLayout(VK_NULL_HANDLE), m_Pipeline(nullptr), m_DescriptorSet(m_Device),
-			m_CurrentImageIndex{}, m_UniformBuffer(m_Device, sizeof(UniformBufferObject))
+			m_CurrentImageIndex{}
 	{
 		CreateCommandBuffers();
 		CreateDescriptorSet();
@@ -118,10 +118,10 @@ namespace VE
 		vkCmdSetViewport(currCommandBuffer, 0, 1, &viewport);
 		vkCmdSetScissor(currCommandBuffer, 0, 1, &scissor);
 
+
 		m_UBO.model = model.GetModelTransform();
 
-		m_UniformBuffer.UploadData(&m_UBO, sizeof(m_UBO));
-		m_DescriptorSet.Update(m_Swapchain.GetCurrentFrame(), 0, &m_UniformBuffer);
+		m_DescriptorSet.Update(m_Swapchain.GetCurrentFrame(), 0, &m_UBO, sizeof(m_UBO));
 		m_DescriptorSet.Bind(currCommandBuffer, m_PipelineLayout, m_Swapchain.GetCurrentFrame());
 
 		model.Bind(currCommandBuffer);

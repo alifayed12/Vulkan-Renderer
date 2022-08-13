@@ -25,6 +25,9 @@ namespace VE
 		void Bind(VkCommandBuffer commandBuffer) const;
 		void Draw(VkCommandBuffer commandBuffer) const;
 	public:
+		void Scale(const glm::vec3& scale);
+		void Rotate(const float degrees, const glm::vec3& axis);
+	public:
 		inline const glm::mat4& GetModelTransform() const { return m_Transform; }
 	private:
 		VertexBuffer			m_VertexBuffer;

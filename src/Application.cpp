@@ -30,13 +30,15 @@ namespace VE
         };
 
         Model rectangle(&m_Device, vertices, indices);
-        //Model car("ModelPath.file");
 
         Renderer renderer(&m_Window, &m_Device);
 
         while(!m_Window.ShouldClose())
         {
             m_Window.PollEvents();
+          
+            rectangle.Scale(glm::vec3(0.5f));
+
             renderer.DrawFrame(rectangle);
         }
 

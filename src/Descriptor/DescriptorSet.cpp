@@ -1,5 +1,6 @@
 #include "DescriptorSet.hpp"
 
+#include "Buffer/UniformBuffer.hpp"
 #include "Utilities.hpp"
 
 #include <vector>
@@ -46,6 +47,16 @@ namespace VE
 	{
 		CreateDescriptorPool(static_cast<uint32_t>(descriptorSetInfo.size()));
 
+		m_DescriptorBuffers.resize(descriptorSetInfo.size());
+		for (size_t i = 0; i < m_DescriptorBuffers.size(); i++)
+		{
+			m_DescriptorBuffers[i].reserve(descriptorSetInfo[i]);
+			for (size_t j = 0; j < m_DescriptorBuffers[i].capacity(); j++)
+			{
+				m_DescriptorBuffers[i].push_back(std::make_unique<UniformBuffer>(m_Device, sizeof(UniformBufferObject)));
+			}
+		}
+
 		std::vector<std::vector<VkDescriptorSetLayoutBinding>> layoutBindings(descriptorSetInfo.size());
 		for (size_t i = 0; i < descriptorSetInfo.size(); i++)
 		{
@@ -82,12 +93,14 @@ namespace VE
 		VK_CHECK(vkAllocateDescriptorSets(m_Device->GetVkDevice(), &descriptorSetAllocInfo, m_DescriptorSets.data()))
 	}
 
-	void DescriptorSet::Update(const uint32_t set, const uint32_t binding, const Buffer* buffer)
+	void DescriptorSet::Update(const uint32_t set, const uint32_t binding, const void* data, const uint64_t dataSize)
 	{
+		m_DescriptorBuffers[set][binding]->UploadData(data, dataSize);
+
 		VkDescriptorBufferInfo bufferInfo{};
-		bufferInfo.buffer = buffer->GetVkBuffer();
+		bufferInfo.buffer = m_DescriptorBuffers[set][binding]->GetVkBuffer();
 		bufferInfo.offset = 0;
-		bufferInfo.range = buffer->GetDataSize();
+		bufferInfo.range = m_DescriptorBuffers[set][binding]->GetDataSize();
 
 		VkWriteDescriptorSet writeDescriptorSet{};
 		writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
