@@ -2,6 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Utilities.hpp"
+
 #include <stdexcept>
 #include <string>
 #include <array>
@@ -73,10 +75,7 @@ namespace VE
             createInfo.ppEnabledLayerNames = m_ValidationLayers.data();
         }
 
-        if(vkCreateInstance(&createInfo, nullptr, &m_Instance) != VK_SUCCESS)
-        {
-            throw std::runtime_error("Error: Could not create instance!");
-        }
+        VK_CHECK(vkCreateInstance(&createInfo, nullptr, &m_Instance))
     }
 
     bool Device::CheckValidationLayers(const std::vector<const char*>& layers)
@@ -251,10 +250,7 @@ namespace VE
         createInfo.ppEnabledLayerNames = m_ValidationLayers.data();
 #endif
 
-        if(vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &m_LogicalDevice) != VK_SUCCESS)
-        {
-            throw std::runtime_error("Error: Failed to create logical device!");
-        }
+        VK_CHECK(vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &m_LogicalDevice))
 
         vkGetDeviceQueue(m_LogicalDevice, indices.graphicsFamily.value(), 0, &m_GraphicsQueue);
         vkGetDeviceQueue(m_LogicalDevice, indices.presentFamily.value(), 0, &m_PresentQueue);
@@ -277,10 +273,7 @@ namespace VE
         poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
         poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-        if (vkCreateCommandPool(m_LogicalDevice, &poolInfo, nullptr, &m_CommandPool) != VK_SUCCESS)
-        {
-            throw std::runtime_error("Error: Failed to create command pool!");
-        }
+        VK_CHECK(vkCreateCommandPool(m_LogicalDevice, &poolInfo, nullptr, &m_CommandPool))
     }
 
     SwapchainSupportDetails Device::QuerySwapchainSupport(VkPhysicalDevice physicalDevice) const

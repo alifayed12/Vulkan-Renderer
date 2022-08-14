@@ -118,10 +118,9 @@ namespace VE
 		vkCmdSetViewport(currCommandBuffer, 0, 1, &viewport);
 		vkCmdSetScissor(currCommandBuffer, 0, 1, &scissor);
 
+		m_GUBO.model = model.GetModelTransform();
 
-		m_UBO.model = model.GetModelTransform();
-
-		m_DescriptorSet.Update(m_Swapchain.GetCurrentFrame(), 0, &m_UBO, sizeof(m_UBO));
+		m_DescriptorSet.Update(m_Swapchain.GetCurrentFrame(), 0, &m_GUBO, sizeof(m_GUBO));
 		m_DescriptorSet.Bind(currCommandBuffer, m_PipelineLayout, m_Swapchain.GetCurrentFrame());
 
 		model.Bind(currCommandBuffer);

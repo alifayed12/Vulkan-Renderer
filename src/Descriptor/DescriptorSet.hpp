@@ -21,7 +21,7 @@ namespace VE
 	class DescriptorSet
 	{
 	public:
-		struct UniformBufferObject
+		struct GlobalUniform
 		{
 			glm::mat4 model;
 			glm::mat4 view;

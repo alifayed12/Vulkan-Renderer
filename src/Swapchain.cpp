@@ -1,5 +1,7 @@
 #include "Swapchain.hpp"
 
+#include "Utilities.hpp"
+
 #include <algorithm>
 #include <stdexcept>
 #include <limits>
@@ -113,10 +115,7 @@ namespace VE
         swapchainCreateInfo.clipped = VK_TRUE;
         swapchainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        if(vkCreateSwapchainKHR(m_Device->GetVkDevice(), &swapchainCreateInfo, nullptr, &m_Swapchain) != VK_SUCCESS)
-        {
-            throw std::runtime_error("Error: Failed to create the swapchain!");
-        }
+        VK_CHECK(vkCreateSwapchainKHR(m_Device->GetVkDevice(), &swapchainCreateInfo, nullptr, &m_Swapchain))
 
         uint32_t swapchainImageCount;
         vkGetSwapchainImagesKHR(m_Device->GetVkDevice(), m_Swapchain, &swapchainImageCount, nullptr);
@@ -153,10 +152,7 @@ namespace VE
                             0,
                             1
                     };
-            if(vkCreateImageView(m_Device->GetVkDevice(), &imageViewCreateInfo, nullptr, &m_ImageViews[i]) != VK_SUCCESS)
-            {
-                throw std::runtime_error("Error: Failed to create an ImageView!");
-            }
+            VK_CHECK(vkCreateImageView(m_Device->GetVkDevice(), &imageViewCreateInfo, nullptr, &m_ImageViews[i]))
         }
     }
 
@@ -222,9 +218,7 @@ namespace VE
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &dependency;
 
-        if (vkCreateRenderPass(m_Device->GetVkDevice(), &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS) {
-            throw std::runtime_error("Error: Failed to create render pass!");
-        }
+        VK_CHECK(vkCreateRenderPass(m_Device->GetVkDevice(), &renderPassInfo, nullptr, &m_RenderPass))
     }
 
     void Swapchain::CreateFramebuffers()
@@ -246,10 +240,7 @@ namespace VE
             framebufferInfo.height = m_ImageExtent.height;
             framebufferInfo.layers = 1;
 
-            if (vkCreateFramebuffer(m_Device->GetVkDevice(), &framebufferInfo, nullptr, &m_Framebuffers[i]) != VK_SUCCESS)
-            {
-                throw std::runtime_error("Error: Failed to create framebuffer!");
-            }
+            VK_CHECK(vkCreateFramebuffer(m_Device->GetVkDevice(), &framebufferInfo, nullptr, &m_Framebuffers[i]))
         }
     }
 

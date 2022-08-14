@@ -53,7 +53,7 @@ namespace VE
 			m_DescriptorBuffers[i].reserve(descriptorSetInfo[i]);
 			for (size_t j = 0; j < m_DescriptorBuffers[i].capacity(); j++)
 			{
-				m_DescriptorBuffers[i].push_back(std::make_unique<UniformBuffer>(m_Device, sizeof(UniformBufferObject)));
+				m_DescriptorBuffers[i].push_back(std::make_unique<UniformBuffer>(m_Device, sizeof(GlobalUniform)));
 			}
 		}
 
