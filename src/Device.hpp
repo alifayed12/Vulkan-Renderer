@@ -44,6 +44,9 @@ namespace VE
         inline VkCommandPool GetCommandPool() const { return m_CommandPool; }
         inline VkQueue GetGraphicsQueue() const { return m_GraphicsQueue; }
         inline VkQueue GetPresentQueue() const { return m_PresentQueue; }
+    public:
+        VkCommandBuffer BeginSingleTimeCommands();
+        void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
     private:
         void CreateInstance();
         bool CheckValidationLayers(const std::vector<const char*>& layers);

@@ -29,7 +29,7 @@ namespace VE
 		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VK_CHECK(vkAllocateMemory(this->m_Device->GetVkDevice(), &allocInfo, nullptr, &m_DeviceMemory))
-			vkBindBufferMemory(this->m_Device->GetVkDevice(), this->m_Buffer, m_DeviceMemory, 0);
+		vkBindBufferMemory(this->m_Device->GetVkDevice(), this->m_Buffer, m_DeviceMemory, 0);
 	}
 
 	void IndexBuffer::BindBuffer(VkCommandBuffer commandBuffer) const

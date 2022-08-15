@@ -45,6 +45,10 @@ namespace VE
 
 	void DescriptorSet::Create(const std::vector<uint32_t>& descriptorSetInfo)
 	{
+		/*
+			numUniforms
+			numSamplers
+		*/
 		CreateDescriptorPool(static_cast<uint32_t>(descriptorSetInfo.size()));
 
 		m_DescriptorBuffers.resize(descriptorSetInfo.size());

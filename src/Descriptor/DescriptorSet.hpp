@@ -3,6 +3,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Device.hpp"
+#include "Texture.hpp"
 #include "Buffer/UniformBuffer.hpp"
 
 #include <memory>
@@ -44,6 +45,7 @@ namespace VE
 		std::vector<VkDescriptorSetLayout>					m_DescriptorSetLayouts;
 		std::vector<VkDescriptorSet>						m_DescriptorSets;
 		std::vector<std::vector<std::unique_ptr<Buffer>>>	m_DescriptorBuffers;
+		std::vector<std::vector<std::unique_ptr<Texture>>>	m_DescriptorImages;
 	};
 }
 

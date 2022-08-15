@@ -52,6 +52,23 @@ namespace VE
 			{1}, {1}
 		};
 
+		/*
+			std::vector<DescriptorSetInfo> info =
+			{
+				// set 0
+				{
+					.uniforms = 1,
+					.samplers = 1
+				},
+
+				// set 1
+				{
+					.uniforms = 1,
+					.samplers = 1
+				}
+			}
+		*/
+
 		m_DescriptorSet.Create(descriptorInfo);
 	}
 
@@ -89,6 +106,13 @@ namespace VE
 		colorDesc.format = VK_FORMAT_R32G32B32_SFLOAT;
 		colorDesc.offset = offsetof(Vertex, color);
 		pipelineConfig.attributeDescriptions.push_back(colorDesc);
+
+		VkVertexInputAttributeDescription texCoordDesc{};
+		texCoordDesc.binding = 0;
+		texCoordDesc.location = 2;
+		texCoordDesc.format = VK_FORMAT_R32G32_SFLOAT;
+		texCoordDesc.offset = offsetof(Vertex, texCoords);
+		pipelineConfig.attributeDescriptions.push_back(texCoordDesc);
 
 		pipelineConfig.renderPass = m_Swapchain.GetRenderPass();
 		pipelineConfig.pipelineLayout = m_PipelineLayout;

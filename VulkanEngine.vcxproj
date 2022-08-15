@@ -124,7 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Vulkan\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)src\vendor;$(SolutionDir)src\vendor\glm;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Vulkan\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)src\vendor;$(SolutionDir)src\vendor\glm;$(SolutionDir)src;$(SolutionDir)src\vendor\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Vulkan\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)src\vendor;$(SolutionDir)src\vendor\glm;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Vulkan\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)src\vendor;$(SolutionDir)src\vendor\glm;$(SolutionDir)src;$(SolutionDir)src\vendor\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -169,6 +169,7 @@
     <ClCompile Include="src\Buffer\VertexBuffer.cpp" />
     <ClCompile Include="src\Buffer\StagingBuffer.cpp" />
     <ClCompile Include="src\Buffer\UniformBuffer.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Descriptor\DescriptorSet.hpp" />
@@ -467,6 +468,7 @@
     <ClInclude Include="src\Buffer\VertexBuffer.hpp" />
     <ClInclude Include="src\Buffer\StagingBuffer.hpp" />
     <ClInclude Include="src\Buffer\UniformBuffer.hpp" />
+    <ClInclude Include="src\Texture.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl" />

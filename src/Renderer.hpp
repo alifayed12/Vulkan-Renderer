@@ -46,7 +46,7 @@ namespace VE
 		DescriptorSet					m_DescriptorSet;
 		uint32_t						m_CurrentImageIndex;
 
-		DescriptorSet::GlobalUniform m_GUBO;
+		DescriptorSet::GlobalUniform	m_GUBO;
 	};
 }
 
