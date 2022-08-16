@@ -47,9 +47,14 @@ namespace VE
 
 	void Renderer::CreateDescriptorSet()
 	{
-		std::vector<uint32_t> descriptorInfo = 
+		std::vector<DescriptorSet::DescriptorSetInfo> descriptorInfo =
 		{
-			{1}, {1}
+			{
+				1, 1 // 1 uniform, 1 sampler
+			},
+			{
+				1, 1 // 1 uniform, 1 sampler
+			}
 		};
 
 		/*
@@ -144,7 +149,8 @@ namespace VE
 
 		m_GUBO.model = model.GetModelTransform();
 
-		m_DescriptorSet.Update(m_Swapchain.GetCurrentFrame(), 0, &m_GUBO, sizeof(m_GUBO));
+		m_DescriptorSet.UpdateBuffer(m_Swapchain.GetCurrentFrame(), 0, &m_GUBO, sizeof(m_GUBO));
+		m_DescriptorSet.UpdateImage(m_Swapchain.GetCurrentFrame(), 1);
 		m_DescriptorSet.Bind(currCommandBuffer, m_PipelineLayout, m_Swapchain.GetCurrentFrame());
 
 		model.Bind(currCommandBuffer);
