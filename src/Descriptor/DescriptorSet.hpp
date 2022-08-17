@@ -46,6 +46,7 @@ namespace VE
 		void Create(const std::vector<DescriptorSetInfo>& descriptorSetInfo);
 		void UpdateBuffer(const uint32_t set, const uint32_t binding, const void* data, const uint64_t dataSize);
 		void UpdateImage(const uint32_t set, const uint32_t binding);
+		void SetTexture(const uint32_t set, const uint32_t binding, std::string_view filePath);
 		void Bind(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const uint32_t set);
 	private:
 		void CreateDescriptorPool(const uint32_t numUniformDescriptors, const uint32_t numSamplerDescriptors);

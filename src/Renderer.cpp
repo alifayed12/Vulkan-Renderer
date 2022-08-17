@@ -58,6 +58,9 @@ namespace VE
 		};
 
 		m_DescriptorSet.Create(descriptorInfo);
+
+		m_DescriptorSet.SetTexture(0, 1, "D:\\OpenGL Projects\\VulkanEngine\\Res\\Textures\\viking_room.png");
+		m_DescriptorSet.SetTexture(1, 1, "D:\\OpenGL Projects\\VulkanEngine\\Res\\Textures\\viking_room.png");
 	}
 
 	void Renderer::CreatePipelineLayout()
@@ -130,7 +133,17 @@ namespace VE
 		vkCmdSetViewport(currCommandBuffer, 0, 1, &viewport);
 		vkCmdSetScissor(currCommandBuffer, 0, 1, &scissor);
 
-		m_GUBO.model = model.GetModelTransform();
+		//m_GUBO.model = model.GetModelTransform();
+
+		static auto startTime = std::chrono::high_resolution_clock::now();
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+		m_GUBO.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		m_GUBO.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		m_GUBO.proj = glm::perspective(glm::radians(45.0f), m_Swapchain.GetExtent().width / (float)m_Swapchain.GetExtent().height, 0.1f, 10.0f);
+		m_GUBO.proj[1][1] *= -1;
 
 		m_DescriptorSet.UpdateBuffer(m_Swapchain.GetCurrentFrame(), 0, &m_GUBO, sizeof(m_GUBO));
 		m_DescriptorSet.UpdateImage(m_Swapchain.GetCurrentFrame(), 1);

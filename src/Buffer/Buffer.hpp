@@ -17,6 +17,11 @@ namespace VE
 		glm::vec3 position;
 		glm::vec3 color;
 		glm::vec2 texCoords;
+
+		bool operator==(const Vertex& other) const
+		{
+			return position == other.position && color == other.color && texCoords == other.texCoords;
+		}
 	};
 
 	class Buffer

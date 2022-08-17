@@ -41,15 +41,12 @@ namespace VE
 		VkDescriptorPoolCreateInfo poolCreateInfo{};
 		poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolCreateInfo.maxSets = 3;
-		poolCreateInfo.poolSizeCount = poolSizes.size();
+		poolCreateInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 		poolCreateInfo.pPoolSizes = poolSizes.data();
 
 		VK_CHECK(vkCreateDescriptorPool(m_Device->GetVkDevice(), &poolCreateInfo, nullptr, &m_DescriptorPool))
 	}
 
-	// vector size represents sets. vector content (uint32_t) represents descriptors in set.
-	// currently this just represents uniform descriptors. need to change to allow for 
-	// descriptors and samplers
 	void DescriptorSet::Create(const std::vector<DescriptorSetInfo>& descriptorSetInfo)
 	{
 		/*
@@ -70,12 +67,12 @@ namespace VE
 			size_t k = 0;
 			for (size_t j = 0; j < descriptorSetInfo[i].numUniforms; j++)
 			{
-				m_DescriptorBuffers.insert({ Key(i, k), std::make_unique<UniformBuffer>(m_Device, sizeof(GlobalUniform)) });
+				m_DescriptorBuffers.insert({ Key((uint32_t)i, (uint32_t)k), std::make_unique<UniformBuffer>(m_Device, sizeof(GlobalUniform)) });
 				k++;
 			}
 			for (size_t j = 0; j < descriptorSetInfo[i].numSamplers; j++)
 			{
-				m_DescriptorImages.insert({ Key(i, k), std::make_unique<Texture>(m_Device, "C:\\Users\\alifa\\Downloads\\stanfordbunny.jpg") });
+				m_DescriptorImages.insert({ Key((uint32_t)i, (uint32_t)k), std::make_unique<Texture>(m_Device) });
 				k++;
 			}
 		}
@@ -173,6 +170,12 @@ namespace VE
 		writeDescriptorSet.pImageInfo = &imageInfo;
 
 		vkUpdateDescriptorSets(m_Device->GetVkDevice(), 1, &writeDescriptorSet, 0, nullptr);
+	}
+
+	void DescriptorSet::SetTexture(const uint32_t set, const uint32_t binding, std::string_view filePath)
+	{
+		size_t loc = Key(set, binding);
+		m_DescriptorImages.at(loc)->Create(filePath);
 	}
 
 	void DescriptorSet::Bind(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const uint32_t set)

@@ -16,7 +16,7 @@ namespace VE
 	class Model
 	{
 	public:
-		Model(Device* device, const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
+		Model(Device* device, std::string_view modelPath);
 		~Model() = default;
 
 		Model(const Model& otherModel) = delete;
@@ -25,14 +25,15 @@ namespace VE
 		void Bind(VkCommandBuffer commandBuffer) const;
 		void Draw(VkCommandBuffer commandBuffer) const;
 	public:
-		void Scale(const glm::vec3& scale);
-		void Rotate(const float degrees, const glm::vec3& axis);
-	public:
 		inline const glm::mat4& GetModelTransform() const { return m_Transform; }
 	private:
-		VertexBuffer			m_VertexBuffer;
-		IndexBuffer				m_IndexBuffer;
-		glm::mat4				m_Transform;
+		void LoadModel();
+	private:
+		Device*							m_Device;
+		const char*						m_ModelPath;
+		std::unique_ptr<VertexBuffer>	m_VertexBuffer;
+		std::unique_ptr<IndexBuffer>	m_IndexBuffer;
+		glm::mat4						m_Transform;
 	};
 }
 

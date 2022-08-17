@@ -1,7 +1,7 @@
 #include "Texture.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "stb/stb_image.h"
 
 #include "Utilities.hpp"
 
@@ -9,14 +9,12 @@
 
 namespace VE
 {
-	Texture::Texture(Device* device, std::string_view filePath)
-		:	m_Device(device), m_StagingBuffer(nullptr), m_Path(filePath.data()), 
+	Texture::Texture(Device* device)
+		:	m_Device(device), m_StagingBuffer(nullptr), m_Path(), 
+			m_TexWidth(0), m_TexHeight(0), m_TexChannels(0),
 			m_Image(VK_NULL_HANDLE), m_ImageView(VK_NULL_HANDLE),
 			m_Sampler(VK_NULL_HANDLE), m_ImageMemory(VK_NULL_HANDLE)
 	{
-		LoadImage();
-		CreateImageView();
-		CreateSampler();
 	}
 
 	Texture::~Texture()
@@ -37,6 +35,15 @@ namespace VE
 		{
 			vkFreeMemory(m_Device->GetVkDevice(), m_ImageMemory, nullptr);
 		}
+	}
+
+	void Texture::Create(std::string_view filePath)
+	{
+		m_Path = filePath.data();
+
+		LoadImage();
+		CreateImageView();
+		CreateSampler();
 	}
 
 	void Texture::LoadImage()

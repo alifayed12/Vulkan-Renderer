@@ -13,7 +13,7 @@ namespace VE
 	class Texture
 	{
 	public:
-		Texture(Device* device, std::string_view filePath);
+		Texture(Device* device);
 		~Texture();
 
 		Texture(const Texture& otherTexture) = delete;
@@ -21,6 +21,8 @@ namespace VE
 	public:
 		inline VkImageView GetImageView() const { return m_ImageView; }
 		inline VkSampler GetSampler() const { return m_Sampler; }
+	public:
+		void Create(std::string_view filePath);
 	private:
 		void LoadImage();
 		void CreateImage();
