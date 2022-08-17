@@ -57,23 +57,6 @@ namespace VE
 			}
 		};
 
-		/*
-			std::vector<DescriptorSetInfo> info =
-			{
-				// set 0
-				{
-					.uniforms = 1,
-					.samplers = 1
-				},
-
-				// set 1
-				{
-					.uniforms = 1,
-					.samplers = 1
-				}
-			}
-		*/
-
 		m_DescriptorSet.Create(descriptorInfo);
 	}
 
@@ -101,7 +84,7 @@ namespace VE
 		VkVertexInputAttributeDescription posDesc{};
 		posDesc.binding = 0;
 		posDesc.location = 0;
-		posDesc.format = VK_FORMAT_R32G32_SFLOAT;
+		posDesc.format = VK_FORMAT_R32G32B32_SFLOAT;
 		posDesc.offset = offsetof(Vertex, position);
 		pipelineConfig.attributeDescriptions.push_back(posDesc);
 
@@ -190,9 +173,12 @@ namespace VE
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = m_Swapchain.GetExtent();
 
-		VkClearValue clearColor = { {{0.239f, 0.209f, 0.545f, 1.0f}} };
-		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = &clearColor;
+		VkClearValue clearValues[2];
+		clearValues[0].color = { {0.1137f, 0.1137f, 0.1725f, 1.0f} };
+		clearValues[1].depthStencil = { 1.0f, 0 };
+
+		renderPassInfo.clearValueCount = 2;
+		renderPassInfo.pClearValues = clearValues;
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}

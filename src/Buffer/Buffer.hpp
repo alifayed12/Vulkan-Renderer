@@ -14,7 +14,7 @@ namespace VE
 {
 	struct Vertex
 	{
-		glm::vec2 position;
+		glm::vec3 position;
 		glm::vec3 color;
 		glm::vec2 texCoords;
 	};
@@ -34,7 +34,6 @@ namespace VE
 		virtual uint32_t GetDataCount() const = 0;
 	protected:
 		virtual void CreateBuffer() = 0;
-		virtual uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
 	protected:
 		Device*			m_Device;
 		VkBuffer		m_Buffer;

@@ -337,6 +337,23 @@ namespace VE
         vkFreeCommandBuffers(m_LogicalDevice, m_CommandPool, 1, &commandBuffer);
     }
 
+    uint32_t Device::FindMemoryType(Device* device, uint32_t typeFilter, VkMemoryPropertyFlags properties)
+    {
+        VkPhysicalDeviceMemoryProperties memProperties;
+        vkGetPhysicalDeviceMemoryProperties(device->GetPhysicalDevice(), &memProperties);
+
+        for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
+        {
+            // typeFilter logical and checks if this memory type can be used
+            if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
+            {
+                return i;
+            }
+        }
+
+        throw std::runtime_error("Error: Failed to find suitable memory type!");
+    }
+
     void Device::Clean()
     {
         if (m_CommandPool != VK_NULL_HANDLE)

@@ -9,13 +9,16 @@
 namespace VE
 {
     Swapchain::Swapchain(Device* device, Window* window)
-        : m_Swapchain(VK_NULL_HANDLE), m_Device(device), m_Window(window),
+        :   m_Swapchain(VK_NULL_HANDLE), m_Device(device), m_Window(window),
             m_ImageFormat{}, m_ImageExtent{}, m_RenderPass(VK_NULL_HANDLE),
+            m_DepthImage(VK_NULL_HANDLE), m_DepthImageView(VK_NULL_HANDLE),
+            m_DepthImageMemory(VK_NULL_HANDLE), 
             m_CurrentFrame(0)
     {
         CreateSwapchain();
         CreateImageViews();
         CreateSyncObjects();
+        CreateDepthResources();
         CreateRenderPass();
         CreateFramebuffers();
     }
@@ -180,6 +183,60 @@ namespace VE
         }
     }
 
+    void Swapchain::CreateDepthResources()
+    {
+        CreateDepthImage();
+        CreateDepthImageView();
+    }
+
+    void Swapchain::CreateDepthImage()
+    {
+        VkImageCreateInfo imageInfo{};
+        imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageInfo.extent.width = m_ImageExtent.width;
+        imageInfo.extent.height = m_ImageExtent.height;
+        imageInfo.extent.depth = 1;
+        imageInfo.mipLevels = 1;
+        imageInfo.arrayLayers = 1;
+        imageInfo.format = VK_FORMAT_D32_SFLOAT;
+        imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        VK_CHECK(vkCreateImage(m_Device->GetVkDevice(), &imageInfo, nullptr, &m_DepthImage))
+
+        VkMemoryRequirements memRequirements;
+        vkGetImageMemoryRequirements(m_Device->GetVkDevice(), m_DepthImage, &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+        allocInfo.memoryTypeIndex = Device::FindMemoryType(m_Device, memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+        VK_CHECK(vkAllocateMemory(m_Device->GetVkDevice(), &allocInfo, nullptr, &m_DepthImageMemory))
+
+        vkBindImageMemory(m_Device->GetVkDevice(), m_DepthImage, m_DepthImageMemory, 0);
+    }
+
+    void Swapchain::CreateDepthImageView()
+    {
+        VkImageViewCreateInfo viewInfo{};
+        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        viewInfo.image = m_DepthImage;
+        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        viewInfo.format = VK_FORMAT_D32_SFLOAT;
+        viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+        viewInfo.subresourceRange.baseMipLevel = 0;
+        viewInfo.subresourceRange.levelCount = 1;
+        viewInfo.subresourceRange.baseArrayLayer = 0;
+        viewInfo.subresourceRange.layerCount = 1;
+
+        VK_CHECK(vkCreateImageView(m_Device->GetVkDevice(), &viewInfo, nullptr, &m_DepthImageView))
+    }
+
     void Swapchain::CreateRenderPass()
     {
         VkAttachmentDescription colorAttachment{};
@@ -196,23 +253,40 @@ namespace VE
         colorAttachmentRef.attachment = 0;
         colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
+        VkAttachmentDescription depthAttachment{};
+        depthAttachment.format = VK_FORMAT_D32_SFLOAT;
+        depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+        depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+        VkAttachmentReference depthAttachmentRef{};
+        depthAttachmentRef.attachment = 1;
+        depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
         VkSubpassDescription subpass{};
         subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
         subpass.colorAttachmentCount = 1;
         subpass.pColorAttachments = &colorAttachmentRef;
+        subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
         VkSubpassDependency dependency{};
         dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
         dependency.dstSubpass = 0;
-        dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
         dependency.srcAccessMask = 0;
-        dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-        dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+        dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+
+        VkAttachmentDescription attachments[] = { colorAttachment, depthAttachment };
 
         VkRenderPassCreateInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-        renderPassInfo.attachmentCount = 1;
-        renderPassInfo.pAttachments = &colorAttachment;
+        renderPassInfo.attachmentCount = 2;
+        renderPassInfo.pAttachments = attachments;
         renderPassInfo.subpassCount = 1;
         renderPassInfo.pSubpasses = &subpass;
         renderPassInfo.dependencyCount = 1;
@@ -228,13 +302,13 @@ namespace VE
         for (size_t i = 0; i < m_ImageViews.size(); i++)
         {
             VkImageView attachments[] = {
-                m_ImageViews[i]
+                m_ImageViews[i], m_DepthImageView
             };
 
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
             framebufferInfo.renderPass = m_RenderPass;
-            framebufferInfo.attachmentCount = 1;
+            framebufferInfo.attachmentCount = 2;
             framebufferInfo.pAttachments = attachments;
             framebufferInfo.width = m_ImageExtent.width;
             framebufferInfo.height = m_ImageExtent.height;
@@ -252,6 +326,7 @@ namespace VE
 
         CreateSwapchain();
         CreateImageViews();
+        CreateDepthResources();
         CreateFramebuffers();
     }
 
@@ -275,6 +350,18 @@ namespace VE
         for (size_t i = 0; i < m_ImageViews.size(); i++)
         {
             vkDestroyImageView(m_Device->GetVkDevice(), m_ImageViews[i], nullptr);
+        }
+        if (m_DepthImageView)
+        {
+            vkDestroyImageView(m_Device->GetVkDevice(), m_DepthImageView, nullptr);
+        }
+        if (m_DepthImage)
+        {
+            vkDestroyImage(m_Device->GetVkDevice(), m_DepthImage, nullptr);
+        }
+        if (m_DepthImageMemory)
+        {
+            vkFreeMemory(m_Device->GetVkDevice(), m_DepthImageMemory, nullptr);
         }
         if (m_Swapchain != VK_NULL_HANDLE)
         {

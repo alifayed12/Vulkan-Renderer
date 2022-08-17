@@ -36,6 +36,8 @@ namespace VE
         Device(Device&&) = delete;
         Device& operator=(Device&& otherDevice) = delete;
     public:
+        static uint32_t FindMemoryType(Device* device, uint32_t typeFilter, VkMemoryPropertyFlags properties);
+    public:
         inline VkDevice GetVkDevice() const { return m_LogicalDevice; }
         inline VkPhysicalDevice GetPhysicalDevice() const { return m_PhysicalDevice; }
         inline VkSurfaceKHR GetSurface() const { return m_Surface; }

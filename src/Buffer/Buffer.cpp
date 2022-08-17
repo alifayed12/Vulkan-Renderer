@@ -20,23 +20,6 @@ namespace VE
 		}
 	}
 
-	uint32_t Buffer::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const
-	{
-		VkPhysicalDeviceMemoryProperties memProperties;
-		vkGetPhysicalDeviceMemoryProperties(m_Device->GetPhysicalDevice(), &memProperties);
-
-		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
-		{
-			// typeFilter logical and checks if this memory type can be used
-			if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
-			{
-				return i;
-			}
-		}
-
-		throw std::runtime_error("Error: Failed to find suitable memory type!");
-	}
-
 	void Buffer::UploadData(const void* memory, const uint64_t dataSize)
 	{
 		assert(dataSize == m_DataSize);

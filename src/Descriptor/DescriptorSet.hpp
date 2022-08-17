@@ -49,17 +49,14 @@ namespace VE
 		void Bind(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const uint32_t set);
 	private:
 		void CreateDescriptorPool(const uint32_t numUniformDescriptors, const uint32_t numSamplerDescriptors);
-		size_t Key(uint32_t i, uint32_t j) const;
+		size_t Key(const uint32_t i, const uint32_t j) const;
 	private:
-		Device*												m_Device;
-		VkDescriptorPool									m_DescriptorPool;
-		std::vector<VkDescriptorSetLayout>					m_DescriptorSetLayouts;
-		std::vector<VkDescriptorSet>						m_DescriptorSets;
-		BufferMap											m_DescriptorBuffers;
-		TextureMap											m_DescriptorImages;
-
-		//std::vector<std::vector<std::unique_ptr<Buffer>>>		m_DescriptorBuffers;
-		//std::vector<std::vector<std::unique_ptr<Texture>>>	m_DescriptorImages;
+		Device*								m_Device;
+		VkDescriptorPool					m_DescriptorPool;
+		std::vector<VkDescriptorSetLayout>	m_DescriptorSetLayouts;
+		std::vector<VkDescriptorSet>		m_DescriptorSets;
+		BufferMap							m_DescriptorBuffers;
+		TextureMap							m_DescriptorImages;
 	};
 }
 

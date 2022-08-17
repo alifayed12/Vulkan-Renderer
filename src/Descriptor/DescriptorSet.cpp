@@ -180,7 +180,7 @@ namespace VE
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &m_DescriptorSets[set], 0, 0);
 	}
 
-	size_t DescriptorSet::Key(uint32_t i, uint32_t j) const
+	size_t DescriptorSet::Key(const uint32_t i, const uint32_t j) const
 	{
 		return (size_t)i << 32 | (unsigned int)j;
 	}

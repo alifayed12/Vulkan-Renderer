@@ -41,6 +41,9 @@ namespace VE
         void CreateSwapchain();
         void CreateImageViews();
         void CreateSyncObjects();
+        void CreateDepthResources();
+        void CreateDepthImage();
+        void CreateDepthImageView();
         void CreateRenderPass();
         void CreateFramebuffers();
         void CleanSwapchain();
@@ -58,6 +61,9 @@ namespace VE
         std::vector<VkSemaphore>    m_ImageAvailableSemaphores;
         std::vector<VkSemaphore>    m_RenderFinishedSemaphores;
         std::vector<VkFence>        m_InFlightFences;
+        VkImage                     m_DepthImage;
+        VkImageView                 m_DepthImageView;
+        VkDeviceMemory              m_DepthImageMemory;
         uint32_t                    m_CurrentFrame;
     };
 }

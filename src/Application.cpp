@@ -19,10 +19,10 @@ namespace VE
     {
         const std::vector<Vertex> vertices =
         {
-            {{-0.5f, -0.5f},    {0.463f, 0.470f, 0.929f},   {1.0f, 0.0f}},
-            {{ 0.5f, -0.5f},    {0.463f, 0.470f, 0.929f},   {0.0f, 0.0f}},
-            {{ 0.5f,  0.5f},    {0.463f, 0.470f, 0.929f},   {0.0f, 1.0f}},
-            {{-0.5f,  0.5f},    {0.463f, 0.470f, 0.929f},   {1.0f, 1.0f}}
+            {{-0.5f, -0.5f, 0.0f},    {0.1686f, 0.1725f, 0.2471f},   {0.0f, 0.0f}},
+            {{ 0.5f, -0.5f, 0.0f},    {0.1686f, 0.1725f, 0.2471f},   {1.0f, 0.0f}},
+            {{ 0.5f,  0.5f, 0.0f},    {0.1686f, 0.1725f, 0.2471f},   {1.0f, 1.0f}},
+            {{-0.5f,  0.5f, 0.0f},    {0.1686f, 0.1725f, 0.2471f},   {0.0f, 1.0f}}
         };
 
         const std::vector<uint16_t> indices = 
@@ -37,8 +37,6 @@ namespace VE
         while(!m_Window.ShouldClose())
         {
             m_Window.PollEvents();
-          
-            rectangle.Scale(glm::vec3(0.5f));
 
             renderer.DrawFrame(rectangle);
         }

@@ -26,7 +26,7 @@ namespace VE
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+		allocInfo.memoryTypeIndex = Device::FindMemoryType(m_Device, memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VK_CHECK(vkAllocateMemory(this->m_Device->GetVkDevice(), &allocInfo, nullptr, &m_DeviceMemory))
 		vkBindBufferMemory(this->m_Device->GetVkDevice(), this->m_Buffer, m_DeviceMemory, 0);
