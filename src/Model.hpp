@@ -38,7 +38,7 @@ namespace VE
 		std::unique_ptr<IndexBuffer>	m_IndexBuffer;
 		DescriptorSet					m_DescriptorSet;
 		glm::mat4						m_Transform;
-
+	public:
 		DescriptorSet::GlobalUniform	m_GUBO;
 	};
 }

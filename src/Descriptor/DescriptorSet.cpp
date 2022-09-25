@@ -7,6 +7,7 @@
 #include "Utilities.hpp"
 
 #include <vector>
+#include <iostream>
 
 namespace VE
 {

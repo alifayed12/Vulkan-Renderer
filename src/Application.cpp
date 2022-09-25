@@ -1,6 +1,7 @@
 #include "Application.hpp"
 
 #include <GLFW/glfw3.h>
+#include "glm/gtx/transform.hpp"
 
 #include "Model.hpp"
 #include "Texture.hpp"
@@ -19,9 +20,7 @@ namespace VE
     {
         // Create Descriptors here
         m_Device.CreateDescriptorLayouts();
-        m_Device.CreateDescriptorPool(1);
-
-        std::vector<VkDescriptorSetLayout> d = m_Device.GetDescriptorSetLayouts();
+        m_Device.CreateDescriptorPool(2);
 
         Model model(&m_Device, "D:\\OpenGL Projects\\VulkanEngine\\Res\\Models\\viking_room.obj");
 
