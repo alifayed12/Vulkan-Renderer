@@ -1,6 +1,9 @@
 #include "DescriptorSet.hpp"
 
 #include "Buffer/UniformBuffer.hpp"
+
+#include "Swapchain.hpp"
+
 #include "Utilities.hpp"
 
 #include <vector>
@@ -8,123 +11,42 @@
 namespace VE
 {
 	DescriptorSet::DescriptorSet(Device* device)
-		:	m_Device(device), m_DescriptorPool(VK_NULL_HANDLE)
+		:	m_Device(device)
 	{
 	}
 
 	DescriptorSet::~DescriptorSet()
 	{
-		if (m_DescriptorSetLayouts.size() > 0)
+		if (!m_DescriptorSets.empty())
 		{
-			for (size_t i = 0; i < m_DescriptorSetLayouts.size(); i++)
-			{
-				vkDestroyDescriptorSetLayout(m_Device->GetVkDevice(), m_DescriptorSetLayouts[i], nullptr);
-			}
-		}
-
-		if (m_DescriptorPool)
-		{
-			vkDestroyDescriptorPool(m_Device->GetVkDevice(), m_DescriptorPool, nullptr);
+			vkFreeDescriptorSets(m_Device->GetVkDevice(), m_Device->GetDescriptorPool(), m_DescriptorSets.size(), m_DescriptorSets.data());
 		}
 	}
 
-	void DescriptorSet::CreateDescriptorPool(const uint32_t numUniformDescriptors, const uint32_t numSamplerDescriptors)
+	void DescriptorSet::Create()
 	{
-		std::array<VkDescriptorPoolSize, 2> poolSizes;
-
-		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		poolSizes[0].descriptorCount = numUniformDescriptors;
-
-		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		poolSizes[1].descriptorCount = numSamplerDescriptors;
-
-		VkDescriptorPoolCreateInfo poolCreateInfo{};
-		poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		poolCreateInfo.maxSets = 3;
-		poolCreateInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-		poolCreateInfo.pPoolSizes = poolSizes.data();
-
-		VK_CHECK(vkCreateDescriptorPool(m_Device->GetVkDevice(), &poolCreateInfo, nullptr, &m_DescriptorPool))
-	}
-
-	void DescriptorSet::Create(const std::vector<DescriptorSetInfo>& descriptorSetInfo)
-	{
-		/*
-			numUniforms
-			numSamplers
-		*/
-		uint32_t numUniforms{}, numSamplers{};
-		for (size_t i = 0; i < descriptorSetInfo.size(); i++)
-		{
-			numUniforms += descriptorSetInfo[i].numUniforms;
-			numSamplers += descriptorSetInfo[i].numSamplers;
-		}
-		CreateDescriptorPool(numUniforms, numSamplers);
-
-
-		for (size_t i = 0; i < descriptorSetInfo.size(); i++)
+		for (size_t i = 0; i < Swapchain::MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			size_t k = 0;
-			for (size_t j = 0; j < descriptorSetInfo[i].numUniforms; j++)
+			for (size_t j = 0; j < Device::NUM_UNIFORMS; j++)
 			{
 				m_DescriptorBuffers.insert({ Key((uint32_t)i, (uint32_t)k), std::make_unique<UniformBuffer>(m_Device, sizeof(GlobalUniform)) });
 				k++;
 			}
-			for (size_t j = 0; j < descriptorSetInfo[i].numSamplers; j++)
+			for (size_t j = 0; j < Device::NUM_SAMPLERS; j++)
 			{
 				m_DescriptorImages.insert({ Key((uint32_t)i, (uint32_t)k), std::make_unique<Texture>(m_Device) });
 				k++;
 			}
 		}
 
-		std::vector<std::vector<VkDescriptorSetLayoutBinding>> layoutBindings(descriptorSetInfo.size());
-		for (size_t i = 0; i < descriptorSetInfo.size(); i++)
-		{
-			uint32_t numDescUniforms = descriptorSetInfo[i].numUniforms;
-			uint32_t numDescSamplers = descriptorSetInfo[i].numSamplers;
-			uint32_t totalDescriptors = numDescUniforms + numDescSamplers;
-
-			layoutBindings[i].resize(totalDescriptors);
-			size_t k = 0;
-			for (size_t j = 0; j < numDescUniforms; j++)
-			{
-				layoutBindings[i][k].binding = static_cast<uint32_t>(k);
-				layoutBindings[i][k].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-				layoutBindings[i][k].descriptorCount = 1;
-				layoutBindings[i][k].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-				layoutBindings[i][k].pImmutableSamplers = nullptr;
-				k++;
-			}
-
-			for (size_t j = 0; j < numDescSamplers; j++)
-			{
-				layoutBindings[i][k].binding = static_cast<uint32_t>(k);
-				layoutBindings[i][k].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-				layoutBindings[i][k].descriptorCount = 1;
-				layoutBindings[i][k].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-				layoutBindings[i][k].pImmutableSamplers = nullptr;
-				k++;
-			}
-		}
-
-		m_DescriptorSetLayouts.resize(descriptorSetInfo.size());
-		for (size_t i = 0; i < m_DescriptorSetLayouts.size(); i++)
-		{
-			VkDescriptorSetLayoutCreateInfo layoutCreateInfo{};
-			layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			layoutCreateInfo.bindingCount = static_cast<uint32_t>(layoutBindings[i].size());
-			layoutCreateInfo.pBindings = layoutBindings[i].data();
-
-			VK_CHECK(vkCreateDescriptorSetLayout(m_Device->GetVkDevice(), &layoutCreateInfo, nullptr, &m_DescriptorSetLayouts[i]))
-		}
-
-		m_DescriptorSets.resize(m_DescriptorSetLayouts.size());
+		m_DescriptorSets.resize(m_Device->GetDescriptorSetLayouts().size());
 
 		VkDescriptorSetAllocateInfo descriptorSetAllocInfo{};
 		descriptorSetAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-		descriptorSetAllocInfo.descriptorPool = m_DescriptorPool;
+		descriptorSetAllocInfo.descriptorPool = m_Device->GetDescriptorPool();
 		descriptorSetAllocInfo.descriptorSetCount = static_cast<uint32_t>(m_DescriptorSets.size());
-		descriptorSetAllocInfo.pSetLayouts = m_DescriptorSetLayouts.data();
+		descriptorSetAllocInfo.pSetLayouts = m_Device->GetDescriptorSetLayouts().data();
 
 		VK_CHECK(vkAllocateDescriptorSets(m_Device->GetVkDevice(), &descriptorSetAllocInfo, m_DescriptorSets.data()))
 	}

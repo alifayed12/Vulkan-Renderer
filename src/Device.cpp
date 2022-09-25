@@ -2,6 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Swapchain.hpp"
+
 #include "Utilities.hpp"
 
 #include <stdexcept>
@@ -337,6 +339,72 @@ namespace VE
         vkFreeCommandBuffers(m_LogicalDevice, m_CommandPool, 1, &commandBuffer);
     }
 
+    void Device::CreateDescriptorLayouts()
+    {
+        std::vector<std::vector<VkDescriptorSetLayoutBinding>> layoutBindings;
+        layoutBindings.resize(Swapchain::MAX_FRAMES_IN_FLIGHT);
+
+        for (size_t i = 0; i < layoutBindings.size(); i++)
+        {
+            uint32_t numDescUniforms = NUM_UNIFORMS;
+            uint32_t numDescSamplers = NUM_SAMPLERS;
+            uint32_t totalDescriptors = numDescUniforms + numDescSamplers;
+
+            layoutBindings[i].resize(totalDescriptors);
+            size_t k = 0;
+            for (size_t j = 0; j < numDescUniforms; j++)
+            {
+                layoutBindings[i][k].binding = static_cast<uint32_t>(k);
+                layoutBindings[i][k].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+                layoutBindings[i][k].descriptorCount = 1;
+                layoutBindings[i][k].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+                layoutBindings[i][k].pImmutableSamplers = nullptr;
+                k++;
+            }
+
+            for (size_t j = 0; j < numDescSamplers; j++)
+            {
+                layoutBindings[i][k].binding = static_cast<uint32_t>(k);
+                layoutBindings[i][k].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+                layoutBindings[i][k].descriptorCount = 1;
+                layoutBindings[i][k].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+                layoutBindings[i][k].pImmutableSamplers = nullptr;
+                k++;
+            }
+        }
+
+        m_DescriptorSetLayouts.resize(layoutBindings.size());
+        for (size_t i = 0; i < m_DescriptorSetLayouts.size(); i++)
+        {
+            VkDescriptorSetLayoutCreateInfo layoutCreateInfo{};
+            layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+            layoutCreateInfo.bindingCount = static_cast<uint32_t>(layoutBindings[i].size());
+            layoutCreateInfo.pBindings = layoutBindings[i].data();
+
+            VK_CHECK(vkCreateDescriptorSetLayout(m_LogicalDevice, &layoutCreateInfo, nullptr, &m_DescriptorSetLayouts[i]))
+        }
+    }
+
+    void Device::CreateDescriptorPool(const uint32_t numObjects)
+    {
+        std::array<VkDescriptorPoolSize, 2> poolSizes;
+
+        poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        poolSizes[0].descriptorCount = 1 * numObjects;
+
+        poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        poolSizes[1].descriptorCount = 1 * numObjects;
+
+        VkDescriptorPoolCreateInfo poolCreateInfo{};
+        poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        poolCreateInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+        poolCreateInfo.maxSets = 2;
+        poolCreateInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+        poolCreateInfo.pPoolSizes = poolSizes.data();
+
+        VK_CHECK(vkCreateDescriptorPool(m_LogicalDevice, &poolCreateInfo, nullptr, &m_DescriptorPool))
+    }
+
     uint32_t Device::FindMemoryType(Device* device, uint32_t typeFilter, VkMemoryPropertyFlags properties)
     {
         VkPhysicalDeviceMemoryProperties memProperties;
@@ -356,6 +424,17 @@ namespace VE
 
     void Device::Clean()
     {
+        if (!m_DescriptorSetLayouts.empty())
+        {
+            for (const auto& layout : m_DescriptorSetLayouts)
+            {
+                vkDestroyDescriptorSetLayout(m_LogicalDevice, layout, nullptr);
+            }
+        }
+        if (m_DescriptorPool != VK_NULL_HANDLE)
+        {
+            vkDestroyDescriptorPool(m_LogicalDevice, m_DescriptorPool, nullptr);
+        }
         if (m_CommandPool != VK_NULL_HANDLE)
         {
             vkDestroyCommandPool(m_LogicalDevice, m_CommandPool, nullptr);

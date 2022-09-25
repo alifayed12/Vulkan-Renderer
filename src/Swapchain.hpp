@@ -2,10 +2,11 @@
 
 #include <vulkan/vulkan.h>
 
-#include "Device.hpp"
-
 #include <vector>
 #include <memory>
+
+#include "Device.hpp"
+#include "Window.hpp"
 
 namespace VE
 {

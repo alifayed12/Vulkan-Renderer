@@ -15,11 +15,10 @@ namespace VE
 {
 	Renderer::Renderer(Window* window, Device* device)
 		:	m_Window(window), m_Device(device), m_Swapchain(m_Device, m_Window),
-			m_PipelineLayout(VK_NULL_HANDLE), m_Pipeline(nullptr), m_DescriptorSet(m_Device),
+			m_PipelineLayout(VK_NULL_HANDLE), m_Pipeline(nullptr),
 			m_CurrentImageIndex{}
 	{
 		CreateCommandBuffers();
-		CreateDescriptorSet();
 		CreatePipelineLayout();
 		CreatePipeline();
 	}
@@ -45,30 +44,12 @@ namespace VE
 		VK_CHECK(vkAllocateCommandBuffers(m_Device->GetVkDevice(), &allocInfo, m_CommandBuffers.data()))
 	}
 
-	void Renderer::CreateDescriptorSet()
-	{
-		std::vector<DescriptorSet::DescriptorSetInfo> descriptorInfo =
-		{
-			{
-				1, 1 // 1 uniform, 1 sampler
-			},
-			{
-				1, 1 // 1 uniform, 1 sampler
-			}
-		};
-
-		m_DescriptorSet.Create(descriptorInfo);
-
-		m_DescriptorSet.SetTexture(0, 1, "D:\\OpenGL Projects\\VulkanEngine\\Res\\Textures\\viking_room.png");
-		m_DescriptorSet.SetTexture(1, 1, "D:\\OpenGL Projects\\VulkanEngine\\Res\\Textures\\viking_room.png");
-	}
-
 	void Renderer::CreatePipelineLayout()
 	{
 		VkPipelineLayoutCreateInfo layoutCreateInfo{};
 		layoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		layoutCreateInfo.setLayoutCount = static_cast<uint32_t>(m_DescriptorSet.GetDescriptorSetLayouts().size());
-		layoutCreateInfo.pSetLayouts = m_DescriptorSet.GetDescriptorSetLayouts().data();
+		layoutCreateInfo.setLayoutCount = static_cast<uint32_t>(m_Device->GetDescriptorSetLayouts().size());
+		layoutCreateInfo.pSetLayouts = m_Device->GetDescriptorSetLayouts().data();
 
 		VK_CHECK(vkCreatePipelineLayout(m_Device->GetVkDevice(), &layoutCreateInfo, nullptr, &m_PipelineLayout))
 	}
@@ -111,7 +92,7 @@ namespace VE
 		m_Pipeline = std::make_unique<Pipeline>(m_Device, pipelineConfig);
 	}
 
-	void Renderer::DrawFrame(const Model& model)
+	void Renderer::DrawFrame(Model& model)
 	{
 		VkCommandBuffer currCommandBuffer = GetCurrentCommandBuffer();
 		BeginFrame(currCommandBuffer);
@@ -133,22 +114,7 @@ namespace VE
 		vkCmdSetViewport(currCommandBuffer, 0, 1, &viewport);
 		vkCmdSetScissor(currCommandBuffer, 0, 1, &scissor);
 
-		//m_GUBO.model = model.GetModelTransform();
-
-		static auto startTime = std::chrono::high_resolution_clock::now();
-
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
-		m_GUBO.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		m_GUBO.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		m_GUBO.proj = glm::perspective(glm::radians(45.0f), m_Swapchain.GetExtent().width / (float)m_Swapchain.GetExtent().height, 0.1f, 10.0f);
-		m_GUBO.proj[1][1] *= -1;
-
-		m_DescriptorSet.UpdateBuffer(m_Swapchain.GetCurrentFrame(), 0, &m_GUBO, sizeof(m_GUBO));
-		m_DescriptorSet.UpdateImage(m_Swapchain.GetCurrentFrame(), 1);
-		m_DescriptorSet.Bind(currCommandBuffer, m_PipelineLayout, m_Swapchain.GetCurrentFrame());
-
+		model.UpdateDescriptors(currCommandBuffer, m_PipelineLayout, m_Swapchain.GetCurrentFrame()); // Optimize to only update if resource change
 		model.Bind(currCommandBuffer);
 		model.Draw(currCommandBuffer);
 

@@ -17,6 +17,12 @@ namespace VE
 
     void Application::Run()
     {
+        // Create Descriptors here
+        m_Device.CreateDescriptorLayouts();
+        m_Device.CreateDescriptorPool(1);
+
+        std::vector<VkDescriptorSetLayout> d = m_Device.GetDescriptorSetLayouts();
+
         Model model(&m_Device, "D:\\OpenGL Projects\\VulkanEngine\\Res\\Models\\viking_room.obj");
 
         Renderer renderer(&m_Window, &m_Device);

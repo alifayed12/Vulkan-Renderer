@@ -7,6 +7,7 @@
 #include <glm/gtx/hash.hpp>
 
 #include <unordered_map>
+#include <chrono>
 
 namespace std
 {
@@ -24,8 +25,12 @@ namespace VE
 {
 	Model::Model(Device* device, std::string_view modelPath)
 		:	m_Device(device), m_ModelPath(modelPath.data()),
-			m_Transform(glm::mat4(1.0f))
+			m_DescriptorSet(device), m_Transform(glm::mat4(1.0f))
 	{
+		m_DescriptorSet.Create();
+		m_DescriptorSet.SetTexture(0, 1, "D:\\OpenGL Projects\\VulkanEngine\\Res\\Textures\\viking_room.png");
+		m_DescriptorSet.SetTexture(1, 1, "D:\\OpenGL Projects\\VulkanEngine\\Res\\Textures\\viking_room.png");
+
 		LoadModel();
 	}
 
@@ -92,5 +97,22 @@ namespace VE
 
 		m_VertexBuffer = std::make_unique<VertexBuffer>(m_Device, vertices.size() * sizeof(Vertex), vertices.data());
 		m_IndexBuffer = std::make_unique<IndexBuffer>(m_Device, indices.size() * sizeof(uint16_t), indices.data());
+	}
+
+	void Model::UpdateDescriptors(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const uint32_t currentFrame)
+	{
+		static auto startTime = std::chrono::high_resolution_clock::now();
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+		m_GUBO.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		m_GUBO.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		m_GUBO.proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 10.0f);
+		m_GUBO.proj[1][1] *= -1;
+
+		m_DescriptorSet.UpdateBuffer(currentFrame, 0, &m_GUBO, sizeof(m_GUBO));
+		m_DescriptorSet.UpdateImage(currentFrame, 1);
+		m_DescriptorSet.Bind(commandBuffer, pipelineLayout, currentFrame);
 	}
 }
