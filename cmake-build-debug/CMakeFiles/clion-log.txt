@@ -1,0 +1,23 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/alifayed/CLionProjects/Vulkan-Renderer -B /Users/alifayed/CLionProjects/Vulkan-Renderer/cmake-build-debug
+-- The CXX compiler identification is AppleClang 13.1.6.13160021
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+x64 architecture in use
+-- Configuring done
+CMake Error at CMakeLists.txt:581 (add_executable):
+  Cannot find source file:
+
+    src/vendor/glm/common.hpp
+
+  Tried extensions .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm .h
+  .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90 .f95 .f03 .hip .ispc
+
+
+CMake Error at CMakeLists.txt:581 (add_executable):
+  No SOURCES given to target: VulkanEngine
+
+
+CMake Generate step failed.  Build files cannot be regenerated correctly.
